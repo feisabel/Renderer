@@ -1,0 +1,7 @@
+# Ignore ignore all files without extension
+*
+!*.*
+!*/
+
+#Ignore .DS_Store
+*.DS_Store
