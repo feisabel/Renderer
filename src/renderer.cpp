@@ -33,8 +33,6 @@ std::vector<int> getColor( std::string line ) {
 
 
 int main( int argc, char *argv[] ) {
-	enum rgb { R=0, G=1, B=2 };
-
 	std::string name, type, codification;
 	int width, height;
 	std::vector<int> upper_left, lower_left, upper_right, lower_right;
@@ -64,9 +62,7 @@ int main( int argc, char *argv[] ) {
 
     	scene_file.close();
     }
-
-    char P6_buffer[width*height*3];
-    std::vector<int> P3_buffer(width*height*3);
+    char *buffer = new char[width*height*3];
 	int k = 0;
 
     //calculating each pixel's rgb
@@ -79,8 +75,7 @@ int main( int argc, char *argv[] ) {
     	for( int col = 0; col < width; col++ ) {
     		for( int i = 0; i < 3; i++ ) {
     			int c = float(col)/( width-1 ) * ( b[i] - a[i] ) + a[i];
-    			P6_buffer[k] = char(c);
-    			P3_buffer[k] = c;
+    			buffer[k] = char(c);
     			k++;
     		}
     	}
@@ -93,14 +88,16 @@ int main( int argc, char *argv[] ) {
     		background_file << "P6\n";
     		background_file << width << " " << height << "\n";
     		background_file << "255\n";
-    		background_file.write( P6_buffer, width*height*3 );
+    		background_file.write( buffer, width*height*3 );
     	}
     	else {
 			background_file << "P3\n";
     		background_file << width << " " << height << "\n";
     		background_file << "255\n";
     		for( int i = 0; i < width*height*3; i+=3 ) {
-    			background_file << P3_buffer[i] << " " << P3_buffer[i+1] << " " << P3_buffer[i+2] << "\n";
+    			background_file << int( ( unsigned char )buffer[i] ) << " " 
+                                << int( ( unsigned char )buffer[i+1] ) << " " 
+                                << int( ( unsigned char )buffer[i+2] ) << "\n";
     		}
     	}
 
