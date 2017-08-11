@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+//parses input line for information (except colors)
 std::string getInfo( std::string line ) {
 	int start, end;
    	start = line.find_first_of( "=" ) + 2;
@@ -13,6 +14,7 @@ std::string getInfo( std::string line ) {
    	return line.substr( start, end-start );
 }
 
+//parses input line for color information
 std::vector<int> getColor( std::string line ) {
 	std::vector<int> color;
 	int start, end;
@@ -42,7 +44,7 @@ int main( int argc, char *argv[] ) {
 	std::ifstream scene_file ( argv[1] );
 	if ( scene_file.is_open() ) {
 		getline( scene_file, line );
-		name = "../images/" + getInfo( line );
+		name = "images/" + getInfo( line );
     	getline( scene_file, line );
 		type = getInfo( line );
 		getline( scene_file, line );
@@ -62,10 +64,11 @@ int main( int argc, char *argv[] ) {
 
     	scene_file.close();
     }
-    char *buffer = new char[width*height*3];
-	int k = 0;
 
-    //calculating each pixel's rgb
+    char *buffer = new char[width*height*3];
+    int k = 0;
+
+    //calculating each pixel's rgb with bilinear interpolation
     for( int row = height-1; row >= 0; row-- ) {
     	std::vector<int> a, b;
     	for( int i = 0; i < 3; i++ ) {
@@ -81,29 +84,28 @@ int main( int argc, char *argv[] ) {
     	}
     }
 
-    //writing background file
-    std::ofstream background_file ( name );
-  	if ( background_file.is_open() ) {
+    //writing image file
+    std::ofstream image_file ( name );
+  	if ( image_file.is_open() ) {
     	if( codification.compare( "binary" ) == 0 ) {
-    		background_file << "P6\n";
-    		background_file << width << " " << height << "\n";
-    		background_file << "255\n";
-    		background_file.write( buffer, width*height*3 );
+    		image_file << "P6\n";
+    		image_file << width << " " << height << "\n";
+    		image_file << "255\n";
+    		image_file.write( buffer, width*height*3 );
     	}
     	else {
-			background_file << "P3\n";
-    		background_file << width << " " << height << "\n";
-    		background_file << "255\n";
+			image_file << "P3\n";
+    		image_file << width << " " << height << "\n";
+    		image_file << "255\n";
     		for( int i = 0; i < width*height*3; i+=3 ) {
-    			background_file << int( ( unsigned char )buffer[i] ) << " " 
+    			image_file << int( ( unsigned char )buffer[i] ) << " " 
                                 << int( ( unsigned char )buffer[i+1] ) << " " 
                                 << int( ( unsigned char )buffer[i+2] ) << "\n";
     		}
     	}
 
-    	background_file.close();
+    	image_file.close();
   	}
 
-    //
 	return 0;
 }
