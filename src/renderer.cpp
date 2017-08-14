@@ -107,5 +107,7 @@ int main( int argc, char *argv[] ) {
     	image_file.close();
   	}
 
+    delete[] buffer;
+
 	return 0;
 }
