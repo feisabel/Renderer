@@ -2,12 +2,14 @@
 
 Computer graphics class project.
 
-## Version 1
+## Version 2
 
-In this first version, the renderer accepts a .txt file which specifies a scene (at this point, only a background described by the RGB of its corner pixels) and generates a .ppm file accordingly. 
+In this second version, spheres were added to the renderer. We create a scene, with as many spheres as we want, and use the spheres' normals to give them color.
+
+![alt tag](images/spheres.png?raw=true "Configuration")
 
 ### Building and running
 
 Run `make`
 
-Run `./renderer data/scene.txt`
+Run `./renderer && open images/background2.ppm`
