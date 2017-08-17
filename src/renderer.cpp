@@ -6,40 +6,8 @@
 
 #include "../utility/scene.h"
 #include "../utility/sphere.h"
+#include "../utility/camera.h"
 
-//parses input line for information (except colors)
-std::string getInfo(std::string line) {
-	int start, end;
-   	start = line.find_first_of("=") + 2;
-    if (line.find_first_of(" ", start) == std::string::npos) {
-    	end = line.size();
-    }
-   	else {
-   		end = line.find_first_of(" ", start);
-    }
-   	return line.substr(start, end-start);
-}
-
-//parses input line for color information
-vec3 getVector(std::string line) {
-    float X, Y, Z;
-	int start, end;
-   	start = line.find_first_of("=") + 2;
-    end = line.find_first_of(" ", start);
-    X = std::stoi(line.substr(start, end-start), nullptr);
-    start = end+1;
-    end = line.find_first_of(" ", start);
-    Y = std::stoi(line.substr(start, end-start), nullptr);
-    start = end+1;
-    if (line.find_first_of(" ", start) == std::string::npos) {
-    	end = line.size();
-    }
-   	else {
-   		end = line.find_first_of(" ", start);
-    }
-   	Z = std::stoi(line.substr(start, end-start), nullptr);
-   	return vec3(X, Y, Z);
-}
 
 rgb color(Ray ray, Scene* scene) {
     hit_record rec;
@@ -73,44 +41,15 @@ int main(int argc, char *argv[]) {
 	rgb upper_left, lower_left, upper_right, lower_right;
 
 	//read scene file
-	std::string line;
-	std::ifstream scene_file (argv[1]);
-	if (scene_file.is_open()) {
-		getline(scene_file, line);
-		name = "images/" + getInfo(line);
-    	getline(scene_file, line);
-		type = getInfo(line);
-		getline(scene_file, line);
-		codification = getInfo(line);
-		getline(scene_file, line);
-		width = std::stoi(getInfo(line), nullptr);
-		getline(scene_file, line);
-		height = std::stoi(getInfo(line), nullptr);
-		getline(scene_file, line);
-		upper_left = getVector(line);
-		getline(scene_file, line);
-		lower_left = getVector(line);
-		getline(scene_file, line);
-		upper_right = getVector(line);
-		getline(scene_file, line);
-		lower_right = getVector(line);
-
-    	scene_file.close();
-    }
-    else {
-        name = "images/background2.ppm";
-        width = 2000;
-        height = 1000;
-        codification = "binary";
-    }
+    name = "images/background2.ppm";
+    width = 2000;
+    height = 1000;
+    codification = "binary";
 
     char *buffer = new char[width*height*3];
     int k = 0;
 
-    point3 lower_left_corner(-2, -1, -1); // lower left corner of the view plane.
-    vec3 horizontal(4, 0, 0); // Horizontal dimension of the view plane.
-    vec3 vertical(0, 2, 0); // Vertical dimension of the view plane.
-    point3 origin(0, 0, 0); // the camera's origin.
+    Camera* camera = new Camera(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
 
     //create scene with hitables
     Scene* scene = new Scene();
@@ -126,8 +65,8 @@ int main(int argc, char *argv[]) {
     	for (int col = 0; col < width; col++) {
             auto u = float(col)/(width-1);
             auto v = float(row)/(height-1);
-            point3 end_point = lower_left_corner + u*horizontal + v*vertical;
-            Ray ray(origin, end_point - origin);
+            point3 end_point = camera->get_lower_left_corner() + u * camera->get_horizontal() + v * camera->get_vertical();
+            Ray ray(camera->get_origin(), end_point - camera->get_origin());
             rgb c = color(ray, scene);
             for (int i = 0; i < 3; i++) {
                 buffer[k] = char(int(255.99 * c[i]));
