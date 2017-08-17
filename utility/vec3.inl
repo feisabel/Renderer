@@ -147,3 +147,7 @@ inline vec3& vec3::operator/=(const value_type t) {
 inline vec3 unit_vector(const vec3 & v) {
     return v/v.length();
 }
+
+inline vec3 lerp(float ratio, vec3 v1, vec3 v2) {
+    return ratio * v1 + (1.0 - ratio) * v2;
+}

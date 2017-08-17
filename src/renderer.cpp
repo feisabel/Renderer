@@ -9,6 +9,52 @@
 #include "../utility/camera.h"
 #include "../utility/image.h"
 
+void init(Scene* scene, Image* image, Camera* camera) {
+    scene->set_background(rgb(0.5, 0.7, 1), rgb(0.5, 0.7, 1), rgb(1, 1, 1), rgb(1, 1, 1));
+    scene->add_hitable(new Sphere(point3( 0, 0, -1 ), 0.5));
+    scene->add_hitable(new Sphere(point3( 0, -100.5, -1 ), 100));
+    scene->add_hitable(new Sphere(point3( 0.5, 0, -1.4 ), 0.5));
+    scene->add_hitable(new Sphere(point3( -0.3, 0, -0.6 ), 0.4));
+
+    //scene->add_hitable(new Sphere(point3( 1, 0, -1.5 ), 0.5));
+    //scene->add_hitable(new Sphere(point3( -1.2, 0, -1.3 ), 0.5));
+
+    //scene->add_hitable(new Sphere(point3( 0, -100.5, -3 ), 99));
+    //scene->add_hitable(new Sphere(point3( 0.3, 0, -1 ), 0.4));
+    //scene->add_hitable(new Sphere(point3( 0, 1, -2 ), 0.6));
+    //scene->add_hitable(new Sphere(point3( -0.4, 0, -3 ), 0.7));
+
+    image->set_dimensions(2000, 1000);
+    image->set_name("images/background2.ppm");
+    image->set_codification("binary");
+
+    camera->set_things(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
+
+}
+
+void write_file(Image* image, char* buffer) {
+    std::ofstream image_file (image->get_name());
+    if (image_file.is_open()) {
+        if (image->get_codification().compare("binary") == 0) {
+            image_file << "P6\n";
+            image_file << image->get_width() << " " << image->get_height() << "\n";
+            image_file << "255\n";
+            image_file.write(buffer, image->get_width() * image->get_height() * 3);
+        }
+        else {
+            image_file << "P3\n";
+            image_file << image->get_width() << " " << image->get_height() << "\n";
+            image_file << "255\n";
+            for (int i = 0; i < image->get_width() * image->get_height() * 3; i+=3) {
+                image_file << int((unsigned char )buffer[i]) << " " 
+                                << int((unsigned char )buffer[i+1]) << " " 
+                                << int((unsigned char )buffer[i+2]) << "\n";
+            }
+        }
+
+        image_file.close();
+    }
+}
 
 rgb color(Ray ray, Scene* scene) {
     hit_record rec;
@@ -17,49 +63,27 @@ rgb color(Ray ray, Scene* scene) {
         return (rec.normal + vec3(1, 1, 1))/2;
     }
     else {
-        rgb upper_left(0.5, 0.7, 1);
-        rgb upper_right(0.5, 0.7, 1);
-        rgb lower_left(1, 1, 1);
-        rgb lower_right(1, 1, 1);
-
         vec3 unit_ray = unit_vector(ray.get_direction());
-        float x_ratio = unit_ray.x();
-        x_ratio += 1;
-        x_ratio /= 2;
-        float y_ratio = unit_ray.y();
-        y_ratio += 1;
-        y_ratio /= 2;
+        float x_ratio = (unit_ray.x()+1.0)/2.0;
+        float y_ratio = (unit_ray.y()+1.0)/2.0;
 
-        rgb left = y_ratio * (upper_left - lower_left) + lower_left;
-        rgb right = y_ratio * (upper_right - lower_right) + lower_right;
-        return x_ratio * (right - left) + right;
+        rgb left = lerp(y_ratio, scene->get_background_upper_left(), scene->get_background_lower_left());
+        rgb right = lerp(y_ratio, scene->get_background_upper_right(), scene->get_background_lower_right());
+        return lerp(x_ratio, right, left);
     }
 }
 
 int main(int argc, char *argv[]) {
-	std::string name, type, codification;
+    Scene* scene = new Scene();
+    Image* image = new Image();
+    Camera* camera = new Camera();
 
-    name = "images/background2.ppm";
-    codification = "binary";
-
-    Image* image = new Image(2000, 1000);
-    Camera* camera = new Camera(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
+    init(scene, image, camera);
 
     char *buffer = new char[image->get_width() * image->get_height() * 3];
-    int k = 0;
-
-    //create scene with hitables
-    Scene* scene = new Scene();
-    scene->add_hitable(new Sphere(point3( 0, 0, -1 ), 0.5));
-    scene->add_hitable(new Sphere(point3( 0, -100.5, -1 ), 100));
-
-    scene->add_hitable(new Sphere(point3( 0.5, 0, -1.4 ), 0.5));
-    scene->add_hitable(new Sphere(point3( -0.3, 0, -0.6 ), 0.4));
-
-    //scene->add_hitable(new Sphere(point3( 1, 0, -1.5 ), 0.5));
-    //scene->add_hitable(new Sphere(point3( -1.2, 0, -1.3 ), 0.5));
-
-    //calculating each pixel's rgb with bilinear interpolation
+    int pixel_index = 0;
+    
+    // calculate each pixel's rgb with bilinear interpolation
     for (int row = image->get_height()-1; row >= 0; row--) {
     	for (int col = 0; col < image->get_width(); col++) {
             auto u = float(col)/(image->get_width()-1);
@@ -68,34 +92,13 @@ int main(int argc, char *argv[]) {
             Ray ray(camera->get_origin(), end_point - camera->get_origin());
             rgb c = color(ray, scene);
             for (int i = 0; i < 3; i++) {
-                buffer[k] = char(int(255.99 * c[i]));
-                k++;
+                buffer[pixel_index] = char(int(255.99 * c[i]));
+                pixel_index++;
             }
     	}
     }
 
-    //writing image file
-    std::ofstream image_file (name);
-  	if (image_file.is_open()) {
-    	if (codification.compare("binary") == 0) {
-    		image_file << "P6\n";
-    		image_file << image->get_width() << " " << image->get_height() << "\n";
-    		image_file << "255\n";
-    		image_file.write(buffer, image->get_width() * image->get_height() * 3);
-    	}
-    	else {
-			image_file << "P3\n";
-    		image_file << image->get_width() << " " << image->get_height() << "\n";
-    		image_file << "255\n";
-    		for (int i = 0; i < image->get_width() * image->get_height() * 3; i+=3) {
-    			image_file << int((unsigned char )buffer[i]) << " " 
-                                << int((unsigned char )buffer[i+1]) << " " 
-                                << int((unsigned char )buffer[i+2]) << "\n";
-    		}
-    	}
-
-    	image_file.close();
-  	}
+    write_file(image, buffer);
 
     delete scene;
     delete image;

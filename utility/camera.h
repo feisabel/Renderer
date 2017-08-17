@@ -15,6 +15,13 @@ class Camera {
     	vec3 get_horizontal() { return horizontal; }
     	vec3 get_vertical() { return vertical; }
     	point3 get_origin() { return origin; }
+
+        void set_things(point3 l_, vec3 h_, vec3 v_, point3 o_) {
+            lower_left_corner = l_;
+            horizontal = h_;
+            vertical = v_;
+            origin = o_;
+        }
 };
 
 #endif
