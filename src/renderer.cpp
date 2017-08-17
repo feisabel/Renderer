@@ -51,11 +51,13 @@ int main(int argc, char *argv[]) {
     //create scene with hitables
     Scene* scene = new Scene();
     scene->add_hitable(new Sphere(point3( 0, 0, -1 ), 0.5));
-    //scene->add_hitable(new Sphere(point3( 1, 0, -1.5 ), 0.5));
-    scene->add_hitable(new Sphere(point3( 0.5, 0, -1.4 ), 0.5));
-    //scene->add_hitable(new Sphere(point3( -1.2, 0, -1.3 ), 0.5));
-    scene->add_hitable(new Sphere(point3( -0.3, 0, -0.6 ), 0.4));
     scene->add_hitable(new Sphere(point3( 0, -100.5, -1 ), 100));
+
+    scene->add_hitable(new Sphere(point3( 0.5, 0, -1.4 ), 0.5));
+    scene->add_hitable(new Sphere(point3( -0.3, 0, -0.6 ), 0.4));
+
+    //scene->add_hitable(new Sphere(point3( 1, 0, -1.5 ), 0.5));
+    //scene->add_hitable(new Sphere(point3( -1.2, 0, -1.3 ), 0.5));
 
     //calculating each pixel's rgb with bilinear interpolation
     for (int row = image->get_height()-1; row >= 0; row--) {
@@ -95,6 +97,9 @@ int main(int argc, char *argv[]) {
     	image_file.close();
   	}
 
+    delete scene;
+    delete image;
+    delete camera;
     delete[] buffer;
 
 	return 0;
