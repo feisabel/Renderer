@@ -7,6 +7,7 @@
 #include "../utility/scene.h"
 #include "../utility/sphere.h"
 #include "../utility/camera.h"
+#include "../utility/image.h"
 
 
 rgb color(Ray ray, Scene* scene) {
@@ -37,19 +38,15 @@ rgb color(Ray ray, Scene* scene) {
 
 int main(int argc, char *argv[]) {
 	std::string name, type, codification;
-	int width, height;
-	rgb upper_left, lower_left, upper_right, lower_right;
 
-	//read scene file
     name = "images/background2.ppm";
-    width = 2000;
-    height = 1000;
     codification = "binary";
 
-    char *buffer = new char[width*height*3];
-    int k = 0;
-
+    Image* image = new Image(2000, 1000);
     Camera* camera = new Camera(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
+
+    char *buffer = new char[image->get_width() * image->get_height() * 3];
+    int k = 0;
 
     //create scene with hitables
     Scene* scene = new Scene();
@@ -61,10 +58,10 @@ int main(int argc, char *argv[]) {
     scene->add_hitable(new Sphere(point3( 0, -100.5, -1 ), 100));
 
     //calculating each pixel's rgb with bilinear interpolation
-    for (int row = height-1; row >= 0; row--) {
-    	for (int col = 0; col < width; col++) {
-            auto u = float(col)/(width-1);
-            auto v = float(row)/(height-1);
+    for (int row = image->get_height()-1; row >= 0; row--) {
+    	for (int col = 0; col < image->get_width(); col++) {
+            auto u = float(col)/(image->get_width()-1);
+            auto v = float(row)/(image->get_height()-1);
             point3 end_point = camera->get_lower_left_corner() + u * camera->get_horizontal() + v * camera->get_vertical();
             Ray ray(camera->get_origin(), end_point - camera->get_origin());
             rgb c = color(ray, scene);
@@ -80,15 +77,15 @@ int main(int argc, char *argv[]) {
   	if (image_file.is_open()) {
     	if (codification.compare("binary") == 0) {
     		image_file << "P6\n";
-    		image_file << width << " " << height << "\n";
+    		image_file << image->get_width() << " " << image->get_height() << "\n";
     		image_file << "255\n";
-    		image_file.write(buffer, width*height*3);
+    		image_file.write(buffer, image->get_width() * image->get_height() * 3);
     	}
     	else {
 			image_file << "P3\n";
-    		image_file << width << " " << height << "\n";
+    		image_file << image->get_width() << " " << image->get_height() << "\n";
     		image_file << "255\n";
-    		for (int i = 0; i < width*height*3; i+=3) {
+    		for (int i = 0; i < image->get_width() * image->get_height() * 3; i+=3) {
     			image_file << int((unsigned char )buffer[i]) << " " 
                                 << int((unsigned char )buffer[i+1]) << " " 
                                 << int((unsigned char )buffer[i+2]) << "\n";
