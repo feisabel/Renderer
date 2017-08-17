@@ -6,10 +6,10 @@ Computer graphics class project.
 
 In this second version, spheres were added to the renderer. We create a scene, with as many spheres as we want, and use the spheres' normals to give them color.
 
-![alt tag](images/spheres.png?raw=true "Configuration")
+![alt tag](images/normal_spheres.png?raw=true "Configuration")
 
 ### Building and running
 
 Run `make`
 
-Run `./renderer && open images/background2.ppm`
+Run `./renderer && open images/normal_spheres.ppm`

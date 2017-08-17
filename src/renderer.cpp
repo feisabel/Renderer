@@ -25,7 +25,7 @@ void init(Scene* scene, Image* image, Camera* camera) {
     //scene->add_hitable(new Sphere(point3( -0.4, 0, -3 ), 0.7));
 
     image->set_dimensions(2000, 1000);
-    image->set_name("images/background2.ppm");
+    image->set_name("images/normal_spheres.ppm");
     image->set_codification("binary");
 
     camera->set_things(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
