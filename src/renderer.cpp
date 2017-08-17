@@ -2,9 +2,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <limits>
 
-#include "../utility/vec3.h"
-#include "../utility/ray.h"
+#include "../utility/scene.h"
 #include "../utility/sphere.h"
 
 //parses input line for information (except colors)
@@ -41,47 +41,11 @@ vec3 getVector(std::string line) {
    	return vec3(X, Y, Z);
 }
 
-bool hit_sphere(Ray ray, Sphere sphere, float &t_) {
-    vec3 direction = ray.get_direction();
-    point3 center = sphere.get_center();
-    float radius = sphere.get_radius();
-    vec3 center_direction = ray.get_origin() - center;
+rgb color(Ray ray, Scene* scene) {
+    hit_record rec;
 
-    float a = dot(direction, direction);
-    float b = 2 * dot(center_direction, direction);
-    float c = dot(center_direction, center_direction) - radius * radius;
-    float delta = b * b - 4 * a * c;
-    if (delta >= 0) {
-        t_ = (-b - sqrt(delta)) / (2 * a);
-        if (t_ < 0) {
-            t_ = (-b + sqrt(delta)) / (2 * a);
-            if (t_ < 0) {
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-        else {
-            return true;
-        }
-    }
-    else {
-        return false;
-    }
-
-}
-
-rgb color(Ray ray) {
-    Sphere sphere(point3( 0, 0, -2 ), 1);
-    float t_;
-
-    if (hit_sphere(ray, sphere, t_ )) {
-        point3 P = ray.point_at(t_);
-        vec3 N = P - sphere.get_center();
-        vec3 unit_N = unit_vector(N);
-       
-        return (unit_N + vec3(1,1,1))/2 ;
+    if (scene->hit(ray, 0, std::numeric_limits<float>::max(), rec)) {
+        return (rec.normal + vec3(1, 1, 1))/2;
     }
     else {
         rgb upper_left(0.5, 0.7, 1);
@@ -148,14 +112,23 @@ int main(int argc, char *argv[]) {
     vec3 vertical(0, 2, 0); // Vertical dimension of the view plane.
     point3 origin(0, 0, 0); // the camera's origin.
 
+    //create scene with hitables
+    Scene* scene = new Scene();
+    scene->add_hitable(new Sphere(point3( 0, 0, -1 ), 0.5));
+    //scene->add_hitable(new Sphere(point3( 1, 0, -1.5 ), 0.5));
+    scene->add_hitable(new Sphere(point3( 0.5, 0, -1.4 ), 0.5));
+    //scene->add_hitable(new Sphere(point3( -1.2, 0, -1.3 ), 0.5));
+    scene->add_hitable(new Sphere(point3( -0.3, 0, -0.6 ), 0.4));
+    scene->add_hitable(new Sphere(point3( 0, -100.5, -1 ), 100));
+
     //calculating each pixel's rgb with bilinear interpolation
     for (int row = height-1; row >= 0; row--) {
     	for (int col = 0; col < width; col++) {
             auto u = float(col)/(width-1);
             auto v = float(row)/(height-1);
             point3 end_point = lower_left_corner + u*horizontal + v*vertical;
-            Ray r(origin, end_point - origin);
-            rgb c = color( r );
+            Ray ray(origin, end_point - origin);
+            rgb c = color(ray, scene);
             for (int i = 0; i < 3; i++) {
                 buffer[k] = char(int(255.99 * c[i]));
                 k++;
