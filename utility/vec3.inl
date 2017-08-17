@@ -19,6 +19,10 @@ inline void vec3::make_unit_vector( void )
      * k =_____
      *    ||v||
      */
+     float k = 1.0 / sqrt( e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z] );
+     e[X] *= k;
+     e[Y] *= k;
+     e[Z] *= k;
 }
 
 //
@@ -98,6 +102,9 @@ inline vec3::value_type dot( const vec3 & v1, const vec3 & v2 ) {
 
 inline vec3 cross( const vec3 & v1, const vec3 & v2 )
 {
+    return vec3((v1.e[vec3::Y] * v2.e[vec3::Z] - v1.e[vec3::Z] - v2.e[vec3::Y]), 
+                (v1.e[vec3::Z] * v2.e[vec3::X] - v1.e[vec3::X] - v2.e[vec3::Z]), 
+                (v1.e[vec3::X] * v2.e[vec3::Y] - v1.e[vec3::Y] - v2.e[vec3::X]));
 }
 
 inline vec3& vec3::operator+=( const vec3 & v ) {
