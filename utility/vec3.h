@@ -13,18 +13,18 @@
 class vec3
 {
     public:
-        //=== Aliases
+        // Aliases
         typedef float value_type;
         enum field_t : int { X=0, Y=1, Z=2, R=0, G=1, B=2 };
 
-        //=== Members
+        // Members
         value_type e[3];
 
-        //=== Special members
+        // Constructor
         vec3( value_type e0_=0.f, value_type e1_=0.f, value_type e2_=0.f )
             : e{ e0_, e1_, e2_ } {}
 
-        //=== Access operators
+        // Access operators
         inline value_type x() const { return e[X]; }
         inline value_type y() const { return e[Y]; }
         inline value_type z() const { return e[Z]; }
@@ -33,19 +33,18 @@ class vec3
         inline value_type b() const { return e[B]; }
 
         // indexed access operator (rhs)
-        inline value_type operator[]( size_t idx ) const { return e[idx]; }
+        inline value_type operator[](size_t idx) const { return e[idx]; }
         // indexed access operator (lhs)
-        inline value_type& operator[]( size_t idx ) { return e[idx]; }
+        inline value_type& operator[](size_t idx) { return e[idx]; }
 
-        //=== Algebraic operators
-
-        inline bool operator==( const vec3 & other_ ) const {
-            return fabs( e[X] - other_.e[X] ) < 0.00001f and
-                fabs( e[Y] - other_.e[Y] ) < 0.00001f and
-                fabs( e[Z] - other_.e[Z] ) < 0.00001f    ;
+        // Algebraic operators
+        inline bool operator==(const vec3 & other_) const {
+            return fabs(e[X] - other_.e[X]) < 0.00001f and
+                fabs(e[Y] - other_.e[Y]) < 0.00001f and
+                fabs(e[Z] - other_.e[Z]) < 0.00001f    ;
         }
 
-        inline vec3 & operator=( const vec3 & other_ ) {
+        inline vec3 & operator=(const vec3 & other_) {
             e[X] = other_.e[X];
             e[Y] = other_.e[Y];
             e[Z] = other_.e[Z];
@@ -53,28 +52,28 @@ class vec3
         }
 
         // Unary '+'
-        inline const vec3& operator+( void ) const { 
+        inline const vec3& operator+(void) const { 
             return *this; 
         }
         // Unary '-'
-        inline vec3 operator-( void ) const { 
-            return vec3( -e[X], -e[Y], -e[Z] ); 
+        inline vec3 operator-(void) const { 
+            return vec3(-e[X], -e[Y], -e[Z]); 
         }
 
-        inline vec3& operator+=( const vec3& );
-        inline vec3& operator-=( const vec3& );
-        inline vec3& operator*=( const vec3& );
-        inline vec3& operator/=( const vec3& );
-        inline vec3& operator*=( const value_type );
-        inline vec3& operator/=( const value_type );
+        inline vec3& operator+=(const vec3&);
+        inline vec3& operator-=(const vec3&);
+        inline vec3& operator*=(const vec3&);
+        inline vec3& operator/=(const vec3&);
+        inline vec3& operator*=(const value_type);
+        inline vec3& operator/=(const value_type);
 
-        inline value_type length( void ) const {
-            return sqrt( e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z] );
+        inline value_type length(void) const {
+            return sqrt(e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z]);
         }
-        inline value_type squared_length( void ) const {
-            return ( e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z] );
+        inline value_type squared_length(void) const {
+            return (e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z]);
         }
-        inline void make_unit_vector( void );
+        inline void make_unit_vector(void);
 };
 
 typedef vec3 rgb;

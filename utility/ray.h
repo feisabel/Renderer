@@ -12,12 +12,12 @@ class Ray {
 	public:
 		typedef float real_type;
 
-		Ray( point3 o_=point3(), vec3 d_=vec3() ) 
-			: origin( o_ ), direction( d_ ) {}
+		Ray(point3 o_=point3(), vec3 d_=vec3()) 
+			: origin(o_), direction(d_) {}
 
-		inline vec3 get_direction( void ) const { return direction; }
-		inline point3 get_origin( void ) const { return origin; }
-		point3 point_at( real_type t_ ) const { return origin + t_ * direction; }
+		inline vec3 get_direction(void) const { return direction; }
+		inline point3 get_origin(void) const { return origin; }
+		point3 point_at(real_type t_) const { return origin + t_ * direction; }
 
 };
 
