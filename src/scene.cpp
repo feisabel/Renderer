@@ -1,4 +1,4 @@
-#include "../utility/scene.h"
+#include "../include/scene.h"
 
 bool Scene::hit(const Ray &ray, float t_min, float t_max, hit_record &rec) const {
 	bool hit_anything = false;

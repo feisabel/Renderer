@@ -4,10 +4,10 @@
 #include <vector>
 #include <limits>
 
-#include "../utility/scene.h"
-#include "../utility/sphere.h"
-#include "../utility/camera.h"
-#include "../utility/image.h"
+#include "../include/scene.h"
+#include "../include/sphere.h"
+#include "../include/camera.h"
+#include "../include/image.h"
 
 void init(Scene* scene, Image* image, Camera* camera) {
     scene->set_background(rgb(0.5, 0.7, 1), rgb(0.5, 0.7, 1), rgb(1, 1, 1), rgb(1, 1, 1));

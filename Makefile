@@ -1,2 +1,2 @@
-renderer: src/renderer.cpp src/sphere.cpp src/scene.cpp utility/vec3.h utility/vec3.inl utility/ray.h utility/sphere.h utility/hitable.h utility/scene.h utility/camera.h utility/image.h
+renderer: src/renderer.cpp src/sphere.cpp src/scene.cpp include/vec3.h include/vec3.inl include/ray.h include/sphere.h include/hitable.h include/scene.h include/camera.h include/image.h
 	g++ -std=c++11 src/renderer.cpp src/sphere.cpp src/scene.cpp -o renderer

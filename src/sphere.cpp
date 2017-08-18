@@ -1,4 +1,4 @@
-#include "../utility/sphere.h"
+#include "../include/sphere.h"
 
 
 bool Sphere::hit(const Ray &ray, float t_min, float t_max, hit_record &rec) const {
