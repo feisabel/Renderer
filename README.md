@@ -2,7 +2,7 @@
 
 Computer graphics class project.
 
-## Version 2
+## Version 3
 
 In this third version, we make a depth map. We create a scene, with as many spheres as we want, and use the spheres' distance to the camera to give them color.
 
