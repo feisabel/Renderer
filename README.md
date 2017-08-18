@@ -12,4 +12,4 @@ In this third version, we make a depth map. We create a scene, with as many sphe
 
 Run `make`
 
-Run `./renderer && open images/normal_spheres.ppm`
+Run `./renderer && open images/depth_spheres.ppm`
