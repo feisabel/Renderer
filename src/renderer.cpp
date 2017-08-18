@@ -25,7 +25,7 @@ void init(Scene* scene, Image* image, Camera* camera) {
     //scene->add_hitable(new Sphere(point3( -0.4, 0, -3 ), 0.7));
 
     image->set_dimensions(2000, 1000);
-    image->set_name("images/normal_spheres.ppm");
+    image->set_name("images/depth_spheres.ppm");
     image->set_codification("binary");
 
     camera->set_things(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
@@ -56,7 +56,7 @@ void write_file(Image* image, char* buffer) {
     }
 }
 
-rgb color(Ray ray, Scene* scene) {
+rgb normal_color(Ray ray, Scene* scene) {
     hit_record rec;
 
     if (scene->hit(ray, 0, std::numeric_limits<float>::max(), rec)) {
@@ -70,6 +70,23 @@ rgb color(Ray ray, Scene* scene) {
         rgb left = lerp(y_ratio, scene->get_background_upper_left(), scene->get_background_lower_left());
         rgb right = lerp(y_ratio, scene->get_background_upper_right(), scene->get_background_lower_right());
         return lerp(x_ratio, right, left);
+    }
+}
+
+rgb depth_color(Ray ray, Scene* scene, float max_depth) {
+    hit_record rec;
+    rgb depth_foreground(0, 0, 0);
+    rgb depth_background(1, 1, 1);
+
+    if (scene->hit(ray, 0, std::numeric_limits<float>::max(), rec)) {
+        float length = (rec.p - ray.get_origin()).length();
+        if(length > max_depth) {
+            length = max_depth;
+        }
+        return length/max_depth * (depth_background - depth_foreground) + depth_background;
+    }
+    else {
+        return rgb(1, 1, 1);
     }
 }
 
@@ -90,7 +107,7 @@ int main(int argc, char *argv[]) {
             auto v = float(row)/(image->get_height()-1);
             point3 end_point = camera->get_lower_left_corner() + u * camera->get_horizontal() + v * camera->get_vertical();
             Ray ray(camera->get_origin(), end_point - camera->get_origin());
-            rgb c = color(ray, scene);
+            rgb c = depth_color(ray, scene, 1.5);
             for (int i = 0; i < 3; i++) {
                 buffer[pixel_index] = char(int(255.99 * c[i]));
                 pixel_index++;
