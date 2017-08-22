@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <limits>
+#include <random>
 
 #include "../include/scene.h"
 #include "../include/sphere.h"
@@ -26,9 +27,13 @@ void init(Scene* scene, Image* image, Camera* camera) {
     //scene->add_hitable(new Sphere(point3( -0.4, 0, -3 ), 0.7));
 
     //add image information
-    image->set_dimensions(2000, 1000);
-    image->set_name("images/depth_spheres.ppm");
+    image->set_mode("depth");
+    image->set_dimensions(1200, 600);
     image->set_codification("binary");
+    if(image->get_mode().compare("normal") == 0)
+        image->set_name("images/normal_spheres.ppm");
+    else
+        image->set_name("images/depth_spheres.ppm");
 
     //add camera information
     camera->set_things(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
@@ -84,10 +89,10 @@ rgb depth_color(Ray ray, Scene* scene, float max_depth, rgb depth_foreground, rg
     if (scene->hit(ray, 0, std::numeric_limits<float>::max(), rec)) {
         float length = (rec.p - ray.get_origin()).length();
         if(length > max_depth) {
-            length = max_depth;
+            return depth_background;
         }
         //colors the spheres with linear interpolation of their distances from the camera
-        return length/max_depth * (depth_background - depth_foreground) + depth_background;
+        return length/max_depth * (depth_background - depth_foreground) + depth_foreground;
     }
     else {
         return depth_background;
@@ -103,15 +108,27 @@ int main(int argc, char *argv[]) {
 
     char *buffer = new char[image->get_width() * image->get_height() * 3];
     int pixel_index = 0;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    int samples = 10;
     
     //create a ray for each pixel and with the ray calculate the pixel's color
     for (int row = image->get_height()-1; row >= 0; row--) {
     	for (int col = 0; col < image->get_width(); col++) {
-            auto u = float(col)/(image->get_width()-1);
-            auto v = float(row)/(image->get_height()-1);
-            point3 end_point = camera->get_lower_left_corner() + u * camera->get_horizontal() + v * camera->get_vertical();
-            Ray ray(camera->get_origin(), end_point - camera->get_origin());
-            rgb c = depth_color(ray, scene, 1.5, rgb(0, 0, 0), rgb(1, 1, 1));
+            rgb c(0,0,0);
+            for(int k = 0; k < samples; k ++) {
+                auto u = (float(col) + std::generate_canonical<float,10>(gen)) / (image->get_width()-1);
+                auto v = (float(row) + std::generate_canonical<float,10>(gen)) / (image->get_height()-1);
+                point3 end_point = camera->get_lower_left_corner() + u * camera->get_horizontal() + v * camera->get_vertical();
+                Ray ray(camera->get_origin(), end_point - camera->get_origin());
+                if(image->get_mode().compare("normal") == 0) {
+                    c += normal_color(ray, scene);
+                }
+                else {
+                    c += depth_color(ray, scene, 1.5, rgb(0, 0, 0), rgb(1, 1, 1));
+                }
+            }
+            c /= samples;
             for (int i = 0; i < 3; i++) {
                 buffer[pixel_index] = char(int(255.99 * c[i]));
                 pixel_index++;
