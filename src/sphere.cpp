@@ -1,6 +1,5 @@
 #include "../include/sphere.h"
 
-
 bool Sphere::hit(const Ray &ray, float t_min, float t_max, hit_record &rec) const {
 	vec3 direction = ray.get_direction();
     vec3 center_direction = ray.get_origin() - center;
@@ -15,6 +14,7 @@ bool Sphere::hit(const Ray &ray, float t_min, float t_max, hit_record &rec) cons
         	rec.t = t;
         	rec.p = ray.point_at(t);
         	rec.normal = unit_vector(rec.p - center);
+            rec.albedo = albedo;
         	return true;
         }
         t = (-b - sqrt(delta)) / (2 * a);
@@ -22,6 +22,7 @@ bool Sphere::hit(const Ray &ray, float t_min, float t_max, hit_record &rec) cons
         	rec.t = t;
         	rec.p = ray.point_at(t);
         	rec.normal = unit_vector(rec.p - center);
+            rec.albedo = albedo;
         	return true;
         }
     }

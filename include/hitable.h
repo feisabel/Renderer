@@ -7,6 +7,7 @@ struct hit_record {
 	float t;
 	point3 p;
 	vec3 normal;
+	rgb albedo;
 };
 
 class Hitable {

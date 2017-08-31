@@ -28,10 +28,10 @@ class Scene {
 		void add_hitable(Hitable* hitable) { hitables.push_back(hitable); }
 		bool hit(const Ray &ray, float t_min, float t_max, hit_record &rec) const;
 
-		rgb get_background_upper_left() { return background.upper_left; }
-		rgb get_background_upper_right() { return background.upper_right; }
-		rgb get_background_lower_left() { return background.lower_left; }
-		rgb get_background_lower_right() { return background.lower_right; }
+		rgb get_background_upper_left() const { return background.upper_left; }
+		rgb get_background_upper_right() const { return background.upper_right; }
+		rgb get_background_lower_left() const { return background.lower_left; }
+		rgb get_background_lower_right() const { return background.lower_right; }
 
 		void set_background(rgb ul_, rgb ur_, rgb ll_, rgb lr_) {
 			background.upper_left = ul_;

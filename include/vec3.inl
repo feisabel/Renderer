@@ -1,5 +1,6 @@
 #include "vec3.h"
 
+
 // Member function implementation.
 inline void vec3::make_unit_vector(void) {
     /**
@@ -150,4 +151,15 @@ inline vec3 unit_vector(const vec3 & v) {
 
 inline vec3 lerp(float ratio, vec3 v1, vec3 v2) {
     return ratio * v1 + (1.0 - ratio) * v2;
+}
+
+inline vec3 random_unit_vector() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    vec3 v;
+    do {
+        v = 2.0 * vec3(std::generate_canonical<float,10>(gen), std::generate_canonical<float,10>(gen), std::generate_canonical<float,10>(gen)) 
+            - vec3(1, 1, 1);
+    } while (dot(v, v) >= 1);
+    return v;
 }
