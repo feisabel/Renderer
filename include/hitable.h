@@ -2,12 +2,15 @@
 #define _HITABLE_H_
 
 #include "ray.h"
+#include <memory>
+
+class Material;
 
 struct hit_record {
 	float t;
 	point3 p;
 	vec3 normal;
-	rgb albedo;
+	std::shared_ptr<Material> material;
 };
 
 class Hitable {

@@ -14,7 +14,7 @@ bool Sphere::hit(const Ray &ray, float t_min, float t_max, hit_record &rec) cons
         	rec.t = t;
         	rec.p = ray.point_at(t);
         	rec.normal = unit_vector(rec.p - center);
-            rec.albedo = albedo;
+            rec.material = material;
         	return true;
         }
         t = (-b - sqrt(delta)) / (2 * a);
@@ -22,7 +22,7 @@ bool Sphere::hit(const Ray &ray, float t_min, float t_max, hit_record &rec) cons
         	rec.t = t;
         	rec.p = ray.point_at(t);
         	rec.normal = unit_vector(rec.p - center);
-            rec.albedo = albedo;
+            rec.material = material;
         	return true;
         }
     }

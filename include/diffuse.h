@@ -1,17 +1,15 @@
 #ifndef _DIFFUSE_H_
 #define _DIFFUSE_H_
 
-#include "shader.h"
+#include "material.h"
 
-class Diffuse: public Shader {
+class Diffuse : public Material {
 	private:
-		float max_steps;
-
+		vec3 albedo;
 	public:
-		Diffuse(float s_=0) : max_steps(s_) {} 
-			
-		rgb color(const Ray& ray, const Scene& scene) const;
-		rgb recursive_color(const Ray& ray, const Scene& scene, int step) const;
+		Diffuse(vec3 a_) : albedo(a_) {}
+		
+		bool scatter(const Ray& ray, const hit_record& rec, vec3& attenuation, Ray& scattered) const;
 };
 
 #endif
