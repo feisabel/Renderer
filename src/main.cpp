@@ -41,6 +41,8 @@ int main(int argc, char *argv[]) {
     Scene scene;
     Image image(800, 400);
     Camera camera(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
+
+    //shaders
     Recursive recursive(3);
     Normal2RGB normal2rgb;
     Depth_map depth_map(2.5, rgb(1,1,1), rgb(0,0,0));
@@ -73,6 +75,7 @@ int main(int argc, char *argv[]) {
 
     char *buffer = new char[image.get_width() * image.get_height() * 3];
 
+    //number of rays per pixel
     int samples = 32;
     Renderer renderer(scene, image, camera, samples);
 
