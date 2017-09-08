@@ -7,10 +7,12 @@
 
 #include "../include/sphere.h"
 #include "../include/diffuse.h"
+#include "../include/bp_material.h"
 #include "../include/normal2rgb.h"
 #include "../include/depth_map.h"
 #include "../include/renderer.h"
 #include "../include/recursive.h"
+#include "../include/blinn_phong.h"
 
 
 void write_file(Image& image, char* buffer) {
@@ -39,47 +41,83 @@ void write_file(Image& image, char* buffer) {
 
 int main(int argc, char *argv[]) {
     Scene scene;
-    Image image(800, 400);
+    Image image(1200, 600);
     Camera camera(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
 
     //shaders
     Recursive recursive(3);
     Normal2RGB normal2rgb;
     Depth_map depth_map(2.5, rgb(1,1,1), rgb(0,0,0));
+    Blinn_phong blinn_phong;
+
+    //add lights
+    //scene.add_light(std::make_shared<Light>(vec3(20,-10,-5), rgb(1,1,1), rgb(1,1,1)));
+    scene.add_light(std::make_shared<Light>(vec3(-20,-10,-5), rgb(1,1,1), rgb(1,1,1)));
+    scene.add_ambient_light(rgb(0.4,0.4,0.4));
 
     //add background and spheres to the scene
     //scene.set_background(rgb(1, 0.35, 0.35), rgb(1, 0.35, 0.35), rgb(1, 1, 1), rgb(1, 1, 1));
     scene.set_background(rgb(0.5, 0.7, 1), rgb(0.5, 0.7, 1), rgb(1, 1, 1), rgb(1, 1, 1));
-    scene.add_hitable(new Sphere(point3( 0, 0, -1 ), 0.5, std::make_shared<Diffuse>(rgb(1,0,0))));
-    scene.add_hitable(new Sphere(point3( 0, -100.5, -1 ), 100, std::make_shared<Diffuse>(rgb(0,1,0))));
-    scene.add_hitable(new Sphere(point3( 0.5, 0, -1.4 ), 0.5, std::make_shared<Diffuse>(rgb(0,0,1))));
-    scene.add_hitable(new Sphere(point3( -0.3, 0, -0.6 ), 0.4, std::make_shared<Diffuse>(rgb(0.5,0,0.5))));
+    //scene.add_hitable(std::make_shared<Sphere>(point3( 0, 0, -1 ), 0.5, std::make_shared<Diffuse>(rgb(1,0,0))));
+    //scene.add_hitable(std::make_shared<Sphere>(point3( 0, -100.5, -1 ), 100, std::make_shared<Diffuse>(rgb(0,1,0))));
+    //scene.add_hitable(std::make_shared<Sphere>(point3( 0.5, 0, -1.4 ), 0.5, std::make_shared<Diffuse>(rgb(0,0,1))));
+    //scene.add_hitable(std::make_shared<Sphere>(point3( -0.3, 0, -0.6 ), 0.4, std::make_shared<Diffuse>(rgb(0.5,0,0.5))));
 
     //scene.add_hitable(new Sphere(point3( 1, 0, -1.5 ), 0.5));
     //scene.add_hitable(new Sphere(point3( -1.2, 0, -1.3 ), 0.5));
 
-    //scene.add_hitable(new Sphere(point3( 0, -100.5, -3 ), 99, rgb(0,1,0)));
+    //specular, ambient, diffuse
+    /*scene.add_hitable(std::make_shared<Sphere>(point3( 0, -100.4, -1 ), 100, 
+        std::make_shared<BP_material>(rgb(0.3,0.3,0.3), rgb(0.1,0.1,0.1), rgb(0,1,0), 1)));
+
+    scene.add_hitable(std::make_shared<Sphere>(point3( 0, 0.01, -1 ), 0.4, 
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,0,0), 8)));
+    scene.add_hitable(std::make_shared<Sphere>(point3( 0.01, 0.016, -0.949 ), 0.35, 
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));
+
+    scene.add_hitable(std::make_shared<Sphere>(point3( 0.017, 0.026, -0.8999 ), 0.3, 
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(0,0,0), 8)));
+    scene.add_hitable(std::make_shared<Sphere>(point3( 0.025, 0.035, -0.84999999999999 ), 0.25, 
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));
+
+    scene.add_hitable(std::make_shared<Sphere>(point3( -0.81, 0.01, -1 ), 0.4, 
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(0,0,1), 8)));
+    scene.add_hitable(std::make_shared<Sphere>(point3( -0.81, 0.03, -0.952 ), 0.35, 
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));
+
+    scene.add_hitable(std::make_shared<Sphere>(point3( 0.9, 0.01, -1 ), 0.4, 
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,0), 8)));
+    scene.add_hitable(std::make_shared<Sphere>(point3( 0.9, -0.01, -0.952 ), 0.35, 
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));*/
+
+    scene.add_hitable(std::make_shared<Sphere>(point3( 0, -100.5, -1 ), 100, 
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(0.4,0.4,0.4), 5)));
+    scene.add_hitable(std::make_shared<Sphere>(point3( 0, 0.0, -1 ), 0.4, 
+        std::make_shared<BP_material>(rgb(0.9,0.9,0.9), rgb(0.1,0.1,0.1), rgb(0,0.3,0.8), 64)));
+
     //scene.add_hitable(new Sphere(point3( 0.3, 0, -1 ), 0.4, rgb(1,0,0)));
     //scene.add_hitable(new Sphere(point3( 0, 1, -2 ), 0.6, rgb(0,0,1)));
     //scene.add_hitable(new Sphere(point3( -0.4, 0, -3 ), 0.7, rgb(0.3,0.5,0.6)));
 
     //add image information
-    image.set_mode("recursive");
+    image.set_mode("blinnphong");
     image.set_codification("binary");
     if(image.get_mode().compare("normal") == 0)
         image.set_name("images/normal_spheres.ppm");
     else if(image.get_mode().compare("recursive") == 0)
         image.set_name("images/recursive_spheres.ppm");
+    else if(image.get_mode().compare("blinnphong") == 0)
+        image.set_name("images/blinnphong_spheres.ppm");
     else
         image.set_name("images/depth_spheres.ppm");
 
     char *buffer = new char[image.get_width() * image.get_height() * 3];
 
     //number of rays per pixel
-    int samples = 32;
+    int samples = 4;
     Renderer renderer(scene, image, camera, samples);
 
-    renderer.render(buffer, recursive);
+    renderer.render(buffer, blinn_phong);
 
     write_file(image, buffer);
 
