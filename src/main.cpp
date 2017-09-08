@@ -50,6 +50,8 @@ int main(int argc, char *argv[]) {
     Depth_map depth_map(2.5, rgb(1,1,1), rgb(0,0,0));
     Blinn_phong blinn_phong;
 
+    blinn_phong.set_shadow(false);
+
     //add lights
     //scene.add_light(std::make_shared<Light>(vec3(20,-10,-5), rgb(1,1,1), rgb(1,1,1)));
     scene.add_light(std::make_shared<Light>(vec3(-20,-10,-5), rgb(1,1,1), rgb(1,1,1)));
@@ -73,11 +75,6 @@ int main(int argc, char *argv[]) {
     scene.add_hitable(std::make_shared<Sphere>(point3( 0, 0.01, -1 ), 0.4, 
         std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,0,0), 8)));
     scene.add_hitable(std::make_shared<Sphere>(point3( 0.01, 0.016, -0.949 ), 0.35, 
-        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));
-
-    scene.add_hitable(std::make_shared<Sphere>(point3( 0.017, 0.026, -0.8999 ), 0.3, 
-        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(0,0,0), 8)));
-    scene.add_hitable(std::make_shared<Sphere>(point3( 0.025, 0.035, -0.84999999999999 ), 0.25, 
         std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));
 
     scene.add_hitable(std::make_shared<Sphere>(point3( -0.81, 0.01, -1 ), 0.4, 

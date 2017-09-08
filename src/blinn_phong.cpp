@@ -13,13 +13,13 @@ rgb Blinn_phong::color(const Ray& ray, const Scene& scene) const {
     	for(int i = 0; i < lights.size(); i++) {
     		vec3 unit_light = unit_vector(-lights[i]->direction);
     		Ray r(rec.p + 0.001*unit_normal, unit_light);
-    		if(!scene.hit(r, 0.015, std::numeric_limits<float>::max(), rec)){
-	    		float d = fmax(dot(unit_light, unit_normal), 0.0);
-	    		float s = pow(fmax(dot(unit_normal, unit_vector(unit_light + unit_ray)), 0.0), 
-	    			material->get_alpha());
-	    		diffuse += material->get_kd() * d * lights[i]->diffuse_intensity;
-	    		specular += material->get_ks() * s * lights[i]->specular_intensity;
-	    	}
+            if(!shadow || !scene.hit(r, 0.015, std::numeric_limits<float>::max(), rec)) {
+        		float d = fmax(dot(unit_light, unit_normal), 0.0);
+    	 		float s = pow(fmax(dot(unit_normal, unit_vector(unit_light + unit_ray)), 0.0), 
+    	   			material->get_alpha());
+    	    	diffuse += material->get_kd() * d * lights[i]->diffuse_intensity;
+    	    	specular += material->get_ks() * s * lights[i]->specular_intensity;
+            }
     	}
         vec3 c =  (material->get_ka() * scene.get_ambient_light()) + diffuse + specular;
         if(c[0] > 1)
