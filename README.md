@@ -20,4 +20,4 @@ This is an image created using the Blinn-Phong shader with shadows disabled:
 
 Run `make`
 
-Run `./renderer && open images/recursive_spheres.ppm`
+Run `./renderer && open images/blinnphong_spheres.ppm`
