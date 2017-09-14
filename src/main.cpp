@@ -16,7 +16,6 @@
 #include "../include/blinn_phong.h"
 #include "../include/metal.h"
 
-
 void write_file(Image& image, char* buffer) {
     std::ofstream image_file (image.get_name());
     if (image_file.is_open()) {
@@ -45,7 +44,7 @@ int main(int argc, char *argv[]) {
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
     Scene scene;
-    Image image(400, 200);
+    Image image(800, 400);
     Camera camera(point3(-2, -1, -1), vec3(4, 0, 0), vec3(0, 2, 0), point3(0, 0, 0));
 
     //shaders
@@ -89,24 +88,24 @@ int main(int argc, char *argv[]) {
     scene.add_hitable(std::make_shared<Sphere>(point3( 0.9, 0.01, -1 ), 0.4, 
         std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,0), 8)));
     scene.add_hitable(std::make_shared<Sphere>(point3( 0.9, -0.01, -0.952 ), 0.35, 
-        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));*/
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));
 
     scene.add_hitable(std::make_shared<Sphere>(point3( 0, -100.5, -1 ), 100, 
         std::make_shared<BP_material>(rgb(0,0,0), rgb(0.1,0.1,0.1), rgb(0.8,0.8,0.8), 64)));
     scene.add_hitable(std::make_shared<Sphere>(point3( 0, 0, -1 ), 0.5, 
-        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(0.7,0.2,0.1), 64)));
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(0.7,0.2,0.1), 64)));*/
 
     //scene.add_hitable(new Sphere(point3( 0.3, 0, -1 ), 0.4, rgb(1,0,0)));
     //scene.add_hitable(new Sphere(point3( 0, 1, -2 ), 0.6, rgb(0,0,1)));
     //scene.add_hitable(new Sphere(point3( -0.4, 0, -3 ), 0.7, rgb(0.3,0.5,0.6)));
 
-    /*scene.add_hitable(std::make_shared<Sphere>(point3(0,0,-1), 0.5, std::make_shared<Diffuse>(rgb(0.8,0.3,0.3))));
+    scene.add_hitable(std::make_shared<Sphere>(point3(0,0,-1), 0.5, std::make_shared<Diffuse>(rgb(0.8,0.3,0.3))));
     scene.add_hitable(std::make_shared<Sphere>(point3(0,-100.5,-1), 100, std::make_shared<Diffuse>(rgb(0.8,0.8,0))));
     scene.add_hitable(std::make_shared<Sphere>(point3(1,0,-1), 0.5, std::make_shared<Metal>(rgb(0.8,0.6,0.2), 1)));
-    scene.add_hitable(std::make_shared<Sphere>(point3(-1,0,-1), 0.5, std::make_shared<Metal>(rgb(0.8,0.8,0.8), 0.3)));*/
+    scene.add_hitable(std::make_shared<Sphere>(point3(-1,0,-1), 0.5, std::make_shared<Metal>(rgb(0.8,0.8,0.8), 0.3)));
 
     //add image information
-    image.set_mode("blinnphong");
+    image.set_mode("recursive");
     image.set_codification("binary");
     if(image.get_mode().compare("normal") == 0)
         image.set_name("images/normal_spheres.ppm");
@@ -123,7 +122,7 @@ int main(int argc, char *argv[]) {
     int samples = 32;
     Renderer renderer(scene, image, camera, samples);
 
-    renderer.render(buffer, blinn_phong);
+    renderer.render(buffer, recursive);
 
     write_file(image, buffer);
 

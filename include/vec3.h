@@ -5,13 +5,10 @@
 #include <iostream>
 #include <cassert>
 #include <random>
-
-
 /*!
  * Represents a 3D vector, that might be used to represent
  * points, directions, vectors, colors, offset
  */
-
 class vec3
 {
     public:
