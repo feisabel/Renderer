@@ -1,7 +1,7 @@
 #include "../include/blinn_phong.h"
 
 rgb Blinn_phong::color(const Ray& ray, const Scene& scene) const {
-	hit_record rec;
+	hit_record rec, aux;
 
     if (scene.hit(ray, 0, std::numeric_limits<float>::max(), rec)) {
     	std::vector<std::shared_ptr<Light>> lights = scene.get_lights();
@@ -12,9 +12,10 @@ rgb Blinn_phong::color(const Ray& ray, const Scene& scene) const {
   		vec3 specular = rgb(0, 0, 0);
     	for(int i = 0; i < lights.size(); i++) {
     		vec3 unit_light = unit_vector(-lights[i]->direction);
-    		Ray r(rec.p + 0.001*unit_normal, unit_light);
-            if(!shadow || !scene.hit(r, 0.015, std::numeric_limits<float>::max(), rec)) {
-        		float d = fmax(dot(unit_light, unit_normal), 0.0);
+    		Ray r(rec.p + 0.0001*unit_normal, unit_light);
+            if(!shadow || !scene.hit(r, 0.0001, std::numeric_limits<float>::max(), aux)) {
+        		
+                float d = fmax(dot(unit_light, unit_normal), 0.0);
     	 		float s = pow(fmax(dot(unit_normal, unit_vector(unit_light + unit_ray)), 0.0), 
     	   			material->get_alpha());
     	    	diffuse += material->get_kd() * d * lights[i]->diffuse_intensity;

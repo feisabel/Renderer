@@ -89,21 +89,21 @@ int main(int argc, char *argv[]) {
     scene.add_hitable(std::make_shared<Sphere>(point3( 0.9, 0.01, -1 ), 0.4, 
         std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,0), 8)));
     scene.add_hitable(std::make_shared<Sphere>(point3( 0.9, -0.01, -0.952 ), 0.35, 
-        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(1,1,1), 8)));*/
 
     scene.add_hitable(std::make_shared<Sphere>(point3( 0, -100.5, -1 ), 100, 
         std::make_shared<BP_material>(rgb(0,0,0), rgb(0.1,0.1,0.1), rgb(0.8,0.8,0.8), 64)));
     scene.add_hitable(std::make_shared<Sphere>(point3( 0, 0, -1 ), 0.5, 
-        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(0.7,0.2,0.1), 64)));*/
+        std::make_shared<BP_material>(rgb(1,1,1), rgb(0.1,0.1,0.1), rgb(0.7,0.2,0.1), 64)));
 
     //scene.add_hitable(new Sphere(point3( 0.3, 0, -1 ), 0.4, rgb(1,0,0)));
     //scene.add_hitable(new Sphere(point3( 0, 1, -2 ), 0.6, rgb(0,0,1)));
     //scene.add_hitable(new Sphere(point3( -0.4, 0, -3 ), 0.7, rgb(0.3,0.5,0.6)));
 
-    scene.add_hitable(std::make_shared<Sphere>(point3(0,0,-1), 0.5, std::make_shared<Diffuse>(rgb(0.8,0.3,0.3))));
+    /*scene.add_hitable(std::make_shared<Sphere>(point3(0,0,-1), 0.5, std::make_shared<Diffuse>(rgb(0.8,0.3,0.3))));
     scene.add_hitable(std::make_shared<Sphere>(point3(0,-100.5,-1), 100, std::make_shared<Diffuse>(rgb(0.8,0.8,0))));
     scene.add_hitable(std::make_shared<Sphere>(point3(1,0,-1), 0.5, std::make_shared<Metal>(rgb(0.8,0.6,0.2), 1)));
-    scene.add_hitable(std::make_shared<Sphere>(point3(-1,0,-1), 0.5, std::make_shared<Metal>(rgb(0.8,0.8,0.8), 0.3)));
+    scene.add_hitable(std::make_shared<Sphere>(point3(-1,0,-1), 0.5, std::make_shared<Metal>(rgb(0.8,0.8,0.8), 0.3)));*/
 
     //add image information
     image.set_mode("blinnphong");
@@ -123,7 +123,7 @@ int main(int argc, char *argv[]) {
     int samples = 32;
     Renderer renderer(scene, image, camera, samples);
 
-    renderer.render(buffer, recursive);
+    renderer.render(buffer, blinn_phong);
 
     write_file(image, buffer);
 
