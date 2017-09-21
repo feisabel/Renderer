@@ -10,7 +10,7 @@ class Ray {
 		vec3 direction;
 
 	public:
-		typedef float real_type;
+		typedef double real_type;
 
 		Ray(point3 o_=point3(), vec3 d_=vec3()) 
 			: origin(o_), direction(d_) {}

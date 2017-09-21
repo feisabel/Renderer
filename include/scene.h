@@ -34,21 +34,20 @@ class Scene {
 		void add_light(std::shared_ptr<Light> light) { lights.push_back(light); }
 		void add_ambient_light(rgb light) { ambient_light = light; }
 
-		bool hit(const Ray &ray, float t_min, float t_max, hit_record &rec) const;
+		bool hit(const Ray &ray, double t_min, double t_max, hit_record &rec) const;
 
 		rgb get_background_upper_left() const { return background.upper_left; }
 		rgb get_background_upper_right() const { return background.upper_right; }
 		rgb get_background_lower_left() const { return background.lower_left; }
 		rgb get_background_lower_right() const { return background.lower_right; }
+
+		void set_background_upper_left(rgb ul_) { background.upper_left = ul_; }
+		void set_background_upper_right(rgb ur_) { background.upper_right = ur_; }
+		void set_background_lower_left(rgb ll_) { background.lower_left = ll_; }
+		void set_background_lower_right(rgb lr_) { background.lower_right = lr_; }
+
 		rgb get_ambient_light() const { return ambient_light; }
 		std::vector<std::shared_ptr<Light>> get_lights() const { return lights; }
-
-		void set_background(rgb ul_, rgb ur_, rgb ll_, rgb lr_) {
-			background.upper_left = ul_;
-			background.upper_right = ur_; 
-			background.lower_left = ll_;
-			background.lower_right = lr_;
-		}
 
 };
 

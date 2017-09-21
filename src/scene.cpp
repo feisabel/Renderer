@@ -1,8 +1,8 @@
 #include "../include/scene.h"
 
-bool Scene::hit(const Ray &ray, float t_min, float t_max, hit_record &rec) const {
+bool Scene::hit(const Ray &ray, double t_min, double t_max, hit_record &rec) const {
 	bool hit_anything = false;
-	float closest = t_max;
+	double closest = t_max;
 	hit_record temp_rec;
 	for (int i = 0; i < hitables.size(); i++) {
 		if (hitables[i]->hit(ray, t_min, t_max, temp_rec)) {

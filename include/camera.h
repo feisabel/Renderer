@@ -8,20 +8,17 @@ class Camera {
     	vec3 vertical; // Vertical dimension of the view plane.
     	point3 origin; // the camera's origin.
     public:
-    	Camera(point3 l_=point3(), vec3 h_=vec3(), vec3 v_=vec3(), point3 o_=point3()) 
-			: lower_left_corner(l_), horizontal(h_), vertical(v_), origin(o_) {}
+    	Camera() {}
 			
     	point3 get_lower_left_corner() { return lower_left_corner; }
     	vec3 get_horizontal() { return horizontal; }
     	vec3 get_vertical() { return vertical; }
     	point3 get_origin() { return origin; }
 
-        void set_things(point3 l_, vec3 h_, vec3 v_, point3 o_) {
-            lower_left_corner = l_;
-            horizontal = h_;
-            vertical = v_;
-            origin = o_;
-        }
+        void set_position(point3 p_) { origin = p_; }
+        void set_lower_left_corner(point3 p_) { lower_left_corner = p_; }
+        void set_horizontal(vec3 h_) { horizontal = h_; }
+        void set_vertical(vec3 v_) { vertical = v_; }
 };
 
 #endif

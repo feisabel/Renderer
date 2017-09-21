@@ -1,0 +1,4 @@
+camera_position: (0, 0, 0)
+view_plane_lower_left_corner: (-2, -1, -1)
+view_plane_horizontal_vector: (4, 0, 0)
+view_place_vertical_vector: (0, 2, 0)

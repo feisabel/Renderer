@@ -16,7 +16,7 @@ inline void vec3::make_unit_vector(void) {
      * k =_____
      *    ||v||
      */
-     float k = 1.0 / sqrt(e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z]);
+     double k = 1.0 / sqrt(e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z]);
      e[X] *= k;
      e[Y] *= k;
      e[Z] *= k;
@@ -148,7 +148,7 @@ inline vec3 unit_vector(const vec3 & v) {
     return v/v.length();
 }
 
-inline vec3 lerp(float ratio, vec3 v1, vec3 v2) {
+inline vec3 lerp(double ratio, vec3 v1, vec3 v2) {
     return ratio * v1 + (1.0 - ratio) * v2;
 }
 
@@ -158,8 +158,10 @@ inline vec3 random_unit_vector() {
 
     vec3 v;
     do {
-        v = 2.0 * vec3(std::generate_canonical<float,6>(gen), std::generate_canonical<float, 6>(gen), std::generate_canonical<float, 6>(gen)) 
-            - vec3(1, 1, 1);
+        double x = std::generate_canonical<double,6>(gen);
+        double y = std::generate_canonical<double, 6>(gen);
+        double z = std::generate_canonical<double, 6>(gen);
+        v = 2.0 * vec3(x, y, z) - vec3(1, 1, 1);
     } while (dot(v, v) >= 1);
     return v;
 }

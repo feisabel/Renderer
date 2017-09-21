@@ -1,0 +1,4 @@
+width: 1920
+height: 960
+codification: binary
+samples: 128

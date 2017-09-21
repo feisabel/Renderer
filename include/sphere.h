@@ -4,7 +4,7 @@
 #include "hitable.h"
 
 class Sphere: public Hitable {
-	typedef float real_type;
+	typedef double real_type;
 
 	private:
 		point3 center;
@@ -18,7 +18,7 @@ class Sphere: public Hitable {
 		inline point3 get_center(void) const { return center; }
 		inline real_type get_radius(void) const { return radius; }
 
-		bool hit(const Ray &ray, float t_min, float t_max, hit_record &rec) const;
+		bool hit(const Ray &ray, double t_min, double t_max, hit_record &rec) const;
 
 };
 

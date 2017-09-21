@@ -9,7 +9,7 @@ class Blinn_phong : public Shader{
 	private:
 		bool shadow;
 	public:
-		Blinn_phong() { shadow = false; }
+		Blinn_phong(bool s_) : shadow(s_) { }
 
 		void set_shadow(bool s_) { shadow = s_; }
 		rgb color(const Ray& ray, const Scene& scene) const;

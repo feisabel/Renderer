@@ -10,13 +10,12 @@ class Renderer {
 		Scene& scene;
 		Image& image;
 		Camera& camera;
-		int samples;
 
 	public:
-		Renderer(Scene& sc_, Image& i_, Camera& c_, int s_)
-			: scene(sc_), image(i_), camera(c_), samples(s_) { }
+		Renderer(Scene& sc_, Image& i_, Camera& c_)
+			: scene(sc_), image(i_), camera(c_) { }
 
-		void render(char* buffer, Shader& shader);
+		void render(char* buffer, std::unique_ptr<Shader>& shader);
 };
 
 #endif

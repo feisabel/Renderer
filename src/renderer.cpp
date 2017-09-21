@@ -1,7 +1,7 @@
 #include "../include/renderer.h"
 #include <iostream> 
 
-void Renderer::render(char* buffer, Shader& shader) {
+void Renderer::render(char* buffer, std::unique_ptr<Shader>& shader) {
     std::random_device rd;
     std::mt19937 gen(rd());
 
@@ -9,18 +9,18 @@ void Renderer::render(char* buffer, Shader& shader) {
     //create rays for each pixel and with each ray calculate the pixel's color
     for (int row = image.get_height()-1; row >= 0; row--) {
         if(row > 0)
-            std::cout << "\r" << int((1.0 - float(row)/(image.get_height()-1))*100.0) << "%" << std::flush;
+            std::cout << "\r" << int((1.0 - double(row)/(image.get_height()-1))*100.0) << "%" << std::flush;
         for (int col = 0; col < image.get_width(); col++) {
             rgb c(0,0,0);
             //anti-aliasing loop
-            for(int k = 0; k < samples; k ++) {
-                auto u = (float(col) + std::generate_canonical<float,10>(gen)) / (image.get_width()-1);
-                auto v = (float(row) + std::generate_canonical<float,10>(gen)) / (image.get_height()-1);
+            for(int k = 0; k < image.get_samples(); k ++) {
+                auto u = (double(col) + std::generate_canonical<double,10>(gen)) / (image.get_width()-1);
+                auto v = (double(row) + std::generate_canonical<double,10>(gen)) / (image.get_height()-1);
                 point3 end_point = camera.get_lower_left_corner() + u * camera.get_horizontal() + v * camera.get_vertical();
                 Ray ray(camera.get_origin(), end_point - camera.get_origin());
-                c += shader.color(ray, scene);
+                c += shader->color(ray, scene);
             }
-            c /= samples;
+            c /= image.get_samples();
             //correct gamma
             c = rgb(sqrt(c[0]), sqrt(c[1]), sqrt(c[2]));
             for (int i = 0; i < 3; i++) {
