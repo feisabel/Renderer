@@ -16,4 +16,7 @@ This is an image created using the Cartoon shader:
 
 Run `make`
 
-Run `./renderer && open images/blinnphong_spheres.ppm`
+Run `./renderer 5 && open images/5.ppm`
+
+You can choose other data sets, just change the number 5 to the number of the data set you want to use. Data set 5 is the one that generated this example image.
+
