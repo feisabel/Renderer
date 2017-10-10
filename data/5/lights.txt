@@ -1,0 +1,9 @@
+ambient_light: (0.4, 0.4, 0.4)
+
+direction: (-20, -10, -15)
+diffuse_intensity: (0.1, 0.1, 0.1)
+specular_intensity: (0.1, 0.1, 0.1)
+
+direction: (7, -8, 0)
+diffuse_intensity: (0.1, 0.1, 0.1)
+specular_intensity: (0.1, 0.1, 0.1)

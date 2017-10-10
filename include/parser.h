@@ -8,7 +8,7 @@
 #include "../include/depth_map.h"
 #include "../include/recursive.h"
 #include "../include/normal2rgb.h"
-//#include "../include/cartoon.h"
+#include "../include/cartoon.h"
 #include "../include/sphere.h"
 #include "../include/diffuse.h"
 #include "../include/metal.h"

@@ -143,6 +143,9 @@ void parse_shader(std::string folder, std::unique_ptr<Shader>& shader) {
 
     		shader = std::unique_ptr<Depth_map>(new Depth_map(max_depth,background,foreground));
     	}
+        else if(s.compare("cartoon") == 0) {
+            shader = std::unique_ptr<Cartoon>(new Cartoon);
+        }
     }
     else {
     	std::cout << "Error opening shader file." << std::endl;
@@ -201,6 +204,38 @@ void parse_spheres(std::string folder, Scene& scene) {
                 getline(spheres_file, s);
                 double alpha = stod(s);
                 scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<BP_material>(ka, kd, ks, alpha)));
+            }
+            else if(s.compare("gradient") == 0) {
+                spheres_file >> s;
+                getline(spheres_file, s, ' ');
+                getline(spheres_file, s);
+                int n = stoi(s);
+                spheres_file >> s;
+                getline(spheres_file, s, ' ');
+                getline(spheres_file, s);
+                rgb outline_color = parse_vector(s);
+                spheres_file >> s;
+                getline(spheres_file, s, ' ');
+                getline(spheres_file, s);
+                rgb shadow_color = parse_vector(s);
+                spheres_file >> s;
+                std::vector<rgb> colors;
+                for(int i = 0; i < n; i++) {
+                    getline(spheres_file, s, ' ');
+                    getline(spheres_file, s, ')');
+                    s += ")";
+                    colors.push_back(parse_vector(s));
+                } 
+                spheres_file >> s;
+                std::vector<double> partitions;
+                getline(spheres_file, s, ' ');
+                for(int i = 0; i < n-1; i++) {
+                    getline(spheres_file, s, ' ');
+                    partitions.push_back(stod(s));
+                }
+                getline(spheres_file, s);
+                partitions.push_back(stod(s));
+                scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions))); 
             }
     	}
 
