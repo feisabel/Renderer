@@ -12,7 +12,7 @@ This is an image created using the Cartoon shader:
 
 In this version, we also introduce two new lights: point and spotlight.
 
-These are images using spotlights:
+These are images using spotlights (with the Blinn-Phong shader):
 
 ![alt tag](images/9.png?raw=true "Configuration")
 
