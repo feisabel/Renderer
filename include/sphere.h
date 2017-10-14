@@ -18,7 +18,7 @@ class Sphere: public Hitable {
 		inline point3 get_center(void) const { return center; }
 		inline real_type get_radius(void) const { return radius; }
 
-		bool hit(const Ray &ray, double t_min, double t_max, hit_record &rec) const;
+		bool hit(const Ray &ray, hit_record &rec) const;
 
 };
 

@@ -1,0 +1,10 @@
+ambient_light: (0.4, 0.4, 0.4)
+
+type: spotlight
+position: (1.4, 3, -2)
+direction: (-0.6, -1, 0)
+angle: 0.2
+diffuse_intensity: (0.8, 0.8, 0.8)
+specular_intensity: (0.8, 0.8, 0.8)
+
+

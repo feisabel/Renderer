@@ -257,18 +257,58 @@ void parse_lights(std::string folder, Scene& scene) {
     	scene.add_ambient_light(parse_vector(s));
 
     	while(lights_file >> s) {
-    		getline(lights_file, s, ' ');
-    		getline(lights_file, s);
-    		vec3 direction = parse_vector(s);
-    		lights_file >> s;
-    		getline(lights_file, s, ' ');
-    		getline(lights_file, s);
-    		rgb diffuse_intensity = parse_vector(s);
-    		lights_file >> s;
-    		getline(lights_file, s, ' ');
-    		getline(lights_file, s);
-    		rgb specular_intensity = parse_vector(s);
-    		scene.add_light(std::make_shared<Light>(direction, diffuse_intensity, specular_intensity));
+            getline(lights_file, s, ' ');
+            getline(lights_file, s);
+            if(s.compare("direction") == 0) {
+        		getline(lights_file, s, ' ');
+        		getline(lights_file, s);
+        		vec3 direction = parse_vector(s);
+        		lights_file >> s;
+        		getline(lights_file, s, ' ');
+        		getline(lights_file, s);
+        		rgb diffuse_intensity = parse_vector(s);
+        		lights_file >> s;
+        		getline(lights_file, s, ' ');
+        		getline(lights_file, s);
+        		rgb specular_intensity = parse_vector(s);
+        		scene.add_light(std::make_shared<Direction_light>(direction, diffuse_intensity, specular_intensity));
+            }
+            if(s.compare("point") == 0) {
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                point3 position = parse_vector(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                rgb diffuse_intensity = parse_vector(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                rgb specular_intensity = parse_vector(s);
+                scene.add_light(std::make_shared<Point_light>(position, diffuse_intensity, specular_intensity));
+            }
+            if(s.compare("spotlight") == 0) {
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                point3 position = parse_vector(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                vec3 direction = parse_vector(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                double angle = stod(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                rgb diffuse_intensity = parse_vector(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                rgb specular_intensity = parse_vector(s);
+                scene.add_light(std::make_shared<Spotlight>(position, direction, angle, diffuse_intensity, specular_intensity));
+            }
     	}
 
     	lights_file.close();

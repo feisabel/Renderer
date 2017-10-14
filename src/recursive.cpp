@@ -10,7 +10,7 @@ rgb Recursive::recursive_color(const Ray& ray, const Scene& scene, int step) con
     if(step == 0) {
         return rgb(0, 0, 0);
     }
-    if (scene.hit(ray, 0.001, std::numeric_limits<double>::max(), rec)) {
+    if (scene.hit(ray, rec)) {
         vec3 attenuation;
         Ray scattered;
         if(rec.material->scatter(ray, rec, attenuation, scattered)) {

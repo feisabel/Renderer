@@ -4,20 +4,13 @@
 #include <vector>
 
 #include "hitable.h"
+#include "light.h"
 
 struct Background {
 	rgb upper_left;
     rgb upper_right;
     rgb lower_left;
     rgb lower_right;
-};
-
-struct Light {
-	vec3 direction;
-	rgb diffuse_intensity;
-	rgb specular_intensity;
-	Light(vec3 d_=vec3(), rgb di_=rgb(), rgb si_=rgb())
-		: direction(d_), diffuse_intensity(di_), specular_intensity(si_) {}
 };
 
 class Scene {
@@ -34,7 +27,7 @@ class Scene {
 		void add_light(std::shared_ptr<Light> light) { lights.push_back(light); }
 		void add_ambient_light(rgb light) { ambient_light = light; }
 
-		bool hit(const Ray &ray, double t_min, double t_max, hit_record &rec) const;
+		bool hit(const Ray &ray, hit_record &rec) const;
 
 		rgb get_background_upper_left() const { return background.upper_left; }
 		rgb get_background_upper_right() const { return background.upper_right; }

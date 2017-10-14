@@ -1,11 +1,11 @@
 ambient_light: (0.4, 0.4, 0.4)
 
-type: direction
-direction: (7, -8, 0)
+type: point
+position: (8, 5, 0)
 diffuse_intensity: (0.8, 0.8, 0.8)
 specular_intensity: (0.8, 0.8, 0.8)
 
-type: direction
-direction: (-20, -10, -15)
+type: point
+position: (-20, 10, 15)
 diffuse_intensity: (0.8, 0.8, 0.8)
 specular_intensity: (0.8, 0.8, 0.8)

@@ -3,7 +3,7 @@
 rgb Cartoon::color(const Ray& ray, const Scene& scene) const {
 	hit_record rec,aux;
 
-    if (scene.hit(ray, 0.001, std::numeric_limits<double>::max(), rec)) {
+    if (scene.hit(ray, rec)) {
     	std::vector<std::shared_ptr<Light>> lights = scene.get_lights();
     	std::shared_ptr<Gradient> material = std::dynamic_pointer_cast<Gradient>(rec.material);
     	if(dot(rec.normal, unit_vector(-ray.get_direction())) < 0.1) {
@@ -14,8 +14,7 @@ rgb Cartoon::color(const Ray& ray, const Scene& scene) const {
         double maxg = 0;
         double maxb = 0;
     	for(int i = 0; i < lights.size(); i++) {
-            vec3 unit_light = unit_vector(-lights[i]->direction);
-            Ray r(rec.p + 0.0001*rec.normal, unit_light);
+            vec3 unit_light = unit_vector(lights[i]->get_direction(rec.p));
     		double cosi = dot(unit_light, rec.normal);
     		if(cosi < 0) {
                 rgb pc = material->get_color(material->get_n()-1);

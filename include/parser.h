@@ -13,6 +13,9 @@
 #include "../include/diffuse.h"
 #include "../include/metal.h"
 #include "../include/bp_material.h"
+#include "../include/direction_light.h"
+#include "../include/point_light.h"
+#include "../include/spotlight.h"
 
 #include <iostream>
 #include <fstream>

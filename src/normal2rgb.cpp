@@ -3,7 +3,7 @@
 rgb Normal2RGB::color(const Ray& ray, const Scene& scene) const {
 	hit_record rec;
 
-    if (scene.hit(ray, 0, std::numeric_limits<double>::max(), rec)) {
+    if (scene.hit(ray, rec)) {
         //colors the spheres with their normals
         return (rec.normal + vec3(1, 1, 1))/2;
     }

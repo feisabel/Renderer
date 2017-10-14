@@ -3,7 +3,7 @@
 rgb Blinn_phong::color(const Ray& ray, const Scene& scene) const {
 	hit_record rec, aux;
 
-    if (scene.hit(ray, 0, std::numeric_limits<double>::max(), rec)) {
+    if (scene.hit(ray, rec)) {
     	std::vector<std::shared_ptr<Light>> lights = scene.get_lights();
     	std::shared_ptr<BP_material> material = std::dynamic_pointer_cast<BP_material>(rec.material);
     	vec3 unit_normal = unit_vector(rec.normal);
@@ -11,15 +11,13 @@ rgb Blinn_phong::color(const Ray& ray, const Scene& scene) const {
   		vec3 diffuse = rgb(0, 0, 0);
   		vec3 specular = rgb(0, 0, 0);
     	for(int i = 0; i < lights.size(); i++) {
-    		vec3 unit_light = unit_vector(-lights[i]->direction);
-    		Ray r(rec.p + 0.0001*unit_normal, unit_light);
-            if(!shadow || !scene.hit(r, 0.0001, std::numeric_limits<double>::max(), aux)) {
-        		
+    		vec3 unit_light = unit_vector(lights[i]->get_direction(rec.p)); 
+            if(!shadow || !scene.hit(lights[i]->get_ray(rec.p, rec.normal), aux)) {
                 double d = fmax(dot(unit_light, unit_normal), 0.0);
     	 		double s = pow(fmax(dot(unit_normal, unit_vector(unit_light + unit_ray)), 0.0), 
     	   			material->get_alpha());
-    	    	diffuse += material->get_kd() * d * lights[i]->diffuse_intensity;
-    	    	specular += material->get_ks() * s * lights[i]->specular_intensity;
+    	    	diffuse += material->get_kd() * d * lights[i]->get_diffuse_intensity(rec.p);
+    	    	specular += material->get_ks() * s * lights[i]->get_specular_intensity(rec.p);
             }
     	}
         vec3 c =  (material->get_ka() * scene.get_ambient_light()) + diffuse + specular;
