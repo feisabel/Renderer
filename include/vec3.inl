@@ -91,9 +91,9 @@ inline vec3::value_type dot(const vec3 & v1, const vec3 & v2) {
 }
 
 inline vec3 cross(const vec3 & v1, const vec3 & v2) {
-    return vec3((v1.e[vec3::Y] * v2.e[vec3::Z] - v1.e[vec3::Z] - v2.e[vec3::Y]), 
-                (v1.e[vec3::Z] * v2.e[vec3::X] - v1.e[vec3::X] - v2.e[vec3::Z]), 
-                (v1.e[vec3::X] * v2.e[vec3::Y] - v1.e[vec3::Y] - v2.e[vec3::X]));
+    return vec3((v1.e[vec3::Y] * v2.e[vec3::Z] - v1.e[vec3::Z] * v2.e[vec3::Y]), 
+                (v1.e[vec3::Z] * v2.e[vec3::X] - v1.e[vec3::X] * v2.e[vec3::Z]), 
+                (v1.e[vec3::X] * v2.e[vec3::Y] - v1.e[vec3::Y] * v2.e[vec3::X]));
 }
 
 inline vec3& vec3::operator+=(const vec3 & v) {

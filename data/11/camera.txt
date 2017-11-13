@@ -1,0 +1,7 @@
+look_from: (-2, 2, 1)
+look_at: (0, 0, -1)
+up_vector: (0, 1, 0)
+projection: perspective
+field_of_view: 1.5708
+aspect_ratio: 2
+focal_distance: 1

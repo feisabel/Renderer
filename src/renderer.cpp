@@ -16,8 +16,7 @@ void Renderer::render(char* buffer, std::unique_ptr<Shader>& shader) {
             for(int k = 0; k < image.get_samples(); k ++) {
                 auto u = (double(col) + std::generate_canonical<double,10>(gen)) / (image.get_width()-1);
                 auto v = (double(row) + std::generate_canonical<double,10>(gen)) / (image.get_height()-1);
-                point3 end_point = camera.get_lower_left_corner() + u * camera.get_horizontal() + v * camera.get_vertical();
-                Ray ray(camera.get_origin(), end_point - camera.get_origin());
+                Ray ray = camera.get_ray(u, v);
                 c += shader->color(ray, scene);
             }
             c /= image.get_samples();
@@ -29,5 +28,5 @@ void Renderer::render(char* buffer, std::unique_ptr<Shader>& shader) {
             }
         }
     }
-    std::cout << "\r" << 100 << "%" << std::endl;
+    std::cout << "\r" << 100 << "%" << std::endl; 
 }

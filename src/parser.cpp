@@ -46,19 +46,35 @@ void parse_camera(std::string folder, Camera& camera) {
     	camera_file >> s;
     	getline(camera_file, s, ' ');
     	getline(camera_file, s);
-    	camera.set_position(parse_vector(s));
+    	point3 look_from = parse_vector(s);
     	camera_file >> s;
     	getline(camera_file, s, ' ');
     	getline(camera_file, s);
-    	camera.set_lower_left_corner(parse_vector(s));
+    	point3 look_at = parse_vector(s);
     	camera_file >> s;
     	getline(camera_file, s, ' ');
     	getline(camera_file, s);
-    	camera.set_horizontal(parse_vector(s));
+    	vec3 up_vector = parse_vector(s);
     	camera_file >> s;
     	getline(camera_file, s, ' ');
     	getline(camera_file, s);
-    	camera.set_vertical(parse_vector(s));
+    	std::string projection = s;
+        camera.set_camera(look_from, look_at, up_vector, projection);
+        if(s.compare("perspective") == 0) {
+            camera_file >> s;
+            getline(camera_file, s, ' ');
+            getline(camera_file, s);
+            double fov = stod(s);
+            camera_file >> s;
+            getline(camera_file, s, ' ');
+            getline(camera_file, s);
+            double ratio = stod(s);
+            camera_file >> s;
+            getline(camera_file, s, ' ');
+            getline(camera_file, s);
+            double d = stod(s);
+            camera.set_perspective(fov, ratio, d);
+        }
 
 		camera_file.close();
 	}
