@@ -73,7 +73,50 @@ void parse_camera(std::string folder, Camera& camera) {
             getline(camera_file, s, ' ');
             getline(camera_file, s);
             double d = stod(s);
-            camera.set_perspective(fov, ratio, d);
+            camera_file >> s;
+            getline(camera_file, s, ' ');
+            getline(camera_file, s);
+            double aperture = stod(s);
+            std::string s2 = "";
+            camera_file >> s2;
+            if(s2.size() == 0) {
+                camera.set_perspective(fov, ratio, d, aperture);
+            }
+            else {
+                getline(camera_file, s2, ' ');
+                getline(camera_file, s2);
+                vec3 vpn = parse_vector(s2);
+                camera.set_perspective(fov, ratio, d, aperture, vpn);
+            }
+        }
+        else if(s.compare("parallel") == 0) {
+            camera_file >> s;
+            getline(camera_file, s, ' ');
+            getline(camera_file, s);
+            double l = stod(s);
+            camera_file >> s;
+            getline(camera_file, s, ' ');
+            getline(camera_file, s);
+            double r = stod(s);
+            camera_file >> s;
+            getline(camera_file, s, ' ');
+            getline(camera_file, s);
+            double t = stod(s);
+            camera_file >> s;
+            getline(camera_file, s, ' ');
+            getline(camera_file, s);
+            double b = stod(s);
+            std::string s2 = "";
+            camera_file >> s2;
+            if(s2.size() == 0) {
+                camera.set_parallel(l, r, t, b);
+            }
+            else {
+                getline(camera_file, s2, ' ');
+                getline(camera_file, s2);
+                vec3 vpn = parse_vector(s2);
+                camera.set_parallel(l, r, t, b, vpn);
+            }
         }
 
 		camera_file.close();

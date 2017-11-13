@@ -165,3 +165,16 @@ inline vec3 random_unit_vector() {
     } while (dot(v, v) >= 1);
     return v;
 }
+
+inline vec3 random_unit_2d_vector() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    vec3 v;
+    do {
+        double x = std::generate_canonical<double,6>(gen);
+        double y = std::generate_canonical<double, 6>(gen);
+        v = 2.0 * vec3(x, y, 0) - vec3(1, 1, 0);
+    } while (dot(v, v) >= 1);
+    return v;
+}
