@@ -28,3 +28,7 @@ bool Sphere::hit(const Ray &ray, hit_record &rec) const {
     }
     return false;
 }
+
+void Sphere::transform(mat4& t) {
+    center *= t;
+}

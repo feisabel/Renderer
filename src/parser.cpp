@@ -217,7 +217,7 @@ void parse_hitables(std::string folder, Scene& scene) {
     	std::string s;
         point3 center, v0, v1, v2;
         double radius;
-        std::shared_ptr<Hitable> triangle;
+        std::shared_ptr<Hitable> hitable;
     	
     	while(hitables_file >> s) {
             getline(hitables_file, s, ' ');
@@ -261,11 +261,12 @@ void parse_hitables(std::string folder, Scene& scene) {
     			getline(hitables_file, s);
     			double fuzzyness = stod(s);
                 if(type.compare("sphere") == 0) {
-    		        scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<Metal>(albedo, fuzzyness)));
+                    hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Metal>(albedo, fuzzyness));
+    		        scene.add_hitable(hitable);
                 }
                 else if(type.compare("triangle") == 0) {
-                    triangle = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Metal>(albedo, fuzzyness));
-                    scene.add_hitable(triangle);
+                    hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Metal>(albedo, fuzzyness));
+                    scene.add_hitable(hitable);
                 }
     		}
     		else if(material.compare("diffuse") == 0) { 
@@ -274,11 +275,12 @@ void parse_hitables(std::string folder, Scene& scene) {
     			getline(hitables_file, s);
     			rgb albedo = parse_vector(s);
                 if(type.compare("sphere") == 0) {
-                    scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<Diffuse>(albedo)));
+                    hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Diffuse>(albedo));
+                    scene.add_hitable(hitable);
                 }
                 else if(type.compare("triangle") == 0) {
-                    triangle = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(albedo));
-                    scene.add_hitable(triangle);
+                    hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(albedo));
+                    scene.add_hitable(hitable);
                 }
     		}
             else if(material.compare("bp") == 0) { 
@@ -299,11 +301,12 @@ void parse_hitables(std::string folder, Scene& scene) {
                 getline(hitables_file, s);
                 double alpha = stod(s);
                 if(type.compare("sphere") == 0) {
-                    scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<BP_material>(ka, kd, ks, alpha)));
+                    hitable = std::make_shared<Sphere>(center, radius, std::make_shared<BP_material>(ka, kd, ks, alpha));
+                    scene.add_hitable(hitable);
                 }
                 else if(type.compare("triangle") == 0) {
-                    triangle = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<BP_material>(ka, kd, ks, alpha));
-                    scene.add_hitable(triangle);
+                    hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<BP_material>(ka, kd, ks, alpha));
+                    scene.add_hitable(hitable);
                 }
             }
             else if(material.compare("gradient") == 0) {
@@ -337,33 +340,32 @@ void parse_hitables(std::string folder, Scene& scene) {
                 getline(hitables_file, s);
                 partitions.push_back(stod(s));
                 if(type.compare("sphere") == 0) {
-                    scene.add_hitable(std::make_shared<Sphere>(center, radius, 
-                        std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions)));
+                    hitable = std::make_shared<Sphere>(center, radius, 
+                        std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions));
+                    scene.add_hitable(hitable);
                 }
                 else if(type.compare("triangle") == 0) {
-                    triangle = std::make_shared<Triangle>(v0, v1, v2, 
+                    hitable = std::make_shared<Triangle>(v0, v1, v2, 
                         std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions));
-                    scene.add_hitable(triangle);
+                    scene.add_hitable(hitable);
                 } 
             }
-            if(type.compare("triangle") == 0) {
+            hitables_file >> s;
+            getline(hitables_file, s, ' ');
+            getline(hitables_file, s);
+            int transfs = stoi(s);
+            mat4 t;
+            for(int i = 0; i < transfs; i++) {
                 hitables_file >> s;
                 getline(hitables_file, s, ' ');
                 getline(hitables_file, s);
-                int transfs = stoi(s);
-                mat4 t;
-                for(int i = 0; i < transfs; i++) {
-                    hitables_file >> s;
-                    getline(hitables_file, s, ' ');
-                    getline(hitables_file, s);
-                    vec3 v = parse_vector(s);
-                    mat4 m;
-                    m.translate(v);
-                    t *= m;
-                }
-                if(transfs > 0) {
-                    triangle->transform(t);
-                }
+                vec3 v = parse_vector(s);
+                mat4 m;
+                m.translate(v);
+                t *= m;
+            }
+            if(transfs > 0) {
+                hitable->transform(t);
             }
     	}
 

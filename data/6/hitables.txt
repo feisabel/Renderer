@@ -6,6 +6,7 @@ ka: (0.1, 0.1, 0.1)
 kd: (0.7, 0.2, 0.1)
 ks: (1, 1, 1)
 alpha: 64
+transformations: 0
 
 type: sphere
 center: (0, -100.5, -1)
@@ -15,3 +16,4 @@ ka: (0.1, 0.1, 0.1)
 kd: (0.8, 0.8, 0.8)
 ks: (0, 0, 0)
 alpha: 64
+transformations: 0
