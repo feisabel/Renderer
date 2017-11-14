@@ -2,6 +2,7 @@
 #define _TRIANGLE_H_
 
 #include "hitable.h"
+#include "mat4.h"
 
 class Triangle: public Hitable {
 	private:
@@ -15,6 +16,13 @@ class Triangle: public Hitable {
 			: v0(v0_), v1(v1_), v2(v2_), material(m_) {}
 
 		bool hit(const Ray &ray, hit_record &rec) const;
+
+		void transform(mat4& t) {
+			v0 *= t;
+			v1 *= t;
+			v2 *= t;
+		}
+
 };
 
 #endif

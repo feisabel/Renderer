@@ -17,7 +17,7 @@ class Hitable {
 	public:
 		virtual ~Hitable() {}
 		virtual bool hit(const Ray &ray, hit_record &rec) const = 0;
-
+		virtual void transform(mat4& t) = 0;
 };
 
 #endif

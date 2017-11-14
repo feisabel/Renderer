@@ -20,6 +20,8 @@ class Sphere: public Hitable {
 
 		bool hit(const Ray &ray, hit_record &rec) const;
 
+		void transform(mat4& t) {}
+
 };
 
 #endif

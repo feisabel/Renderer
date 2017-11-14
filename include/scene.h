@@ -41,7 +41,6 @@ class Scene {
 
 		rgb get_ambient_light() const { return ambient_light; }
 		std::vector<std::shared_ptr<Light>> get_lights() const { return lights; }
-
 };
 
 #endif

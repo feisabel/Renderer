@@ -136,6 +136,18 @@ inline vec3& vec3::operator*=(const value_type t) {
     return *this;
 }
 
+inline vec3& vec3::operator*=(mat4& t) {
+    vec3 result(0,0,0);
+    for(int i = 0; i < 3; i++){
+        for(int k = 0; k < 3; k++) {
+            result[i] += e[k] * t[k][i]; 
+        }
+        result[i] += t[3][i]; 
+    }
+    *this = result;
+    return *this;
+}
+
 inline vec3& vec3::operator/=(const value_type t) {
     e[X] /= t;
     e[Y] /= t;

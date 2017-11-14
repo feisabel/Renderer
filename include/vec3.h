@@ -5,6 +5,9 @@
 #include <iostream>
 #include <cassert>
 #include <random>
+
+#include "mat4.h"
+
 /*!
  * Represents a 3D vector, that might be used to represent
  * points, directions, vectors, colors, offset
@@ -65,6 +68,7 @@ class vec3
         inline vec3& operator/=(const vec3&);
         inline vec3& operator*=(const value_type);
         inline vec3& operator/=(const value_type);
+        inline vec3& operator*=(mat4& t);
 
         inline value_type length(void) const {
             return sqrt(e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z]);

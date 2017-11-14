@@ -1,0 +1,4 @@
+width: 900
+height: 450
+codification: binary
+samples: 32
