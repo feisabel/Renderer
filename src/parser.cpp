@@ -5,7 +5,7 @@ void parse_input(std::string folder, Scene& scene, Image& image, Camera& camera,
     parse_camera(folder, camera);
     parse_image(folder, image);
     parse_shader(folder, shader);
-    parse_spheres(folder, scene);
+    parse_hitables(folder, scene);
     parse_lights(folder, scene);
 }
 
@@ -211,97 +211,142 @@ void parse_shader(std::string folder, std::unique_ptr<Shader>& shader) {
     }
 }
 
-void parse_spheres(std::string folder, Scene& scene) {
-	std::ifstream spheres_file ("data/"+folder+"/spheres.txt");
-    if (spheres_file.is_open()) {
+void parse_hitables(std::string folder, Scene& scene) {
+	std::ifstream hitables_file ("data/"+folder+"/hitables.txt");
+    if (hitables_file.is_open()) {
     	std::string s;
+        point3 center, v0, v1, v2;
+        double radius;
     	
-    	while(spheres_file >> s) {
-    		getline(spheres_file, s, ' ');
-    		getline(spheres_file, s);
-    		point3 center = parse_vector(s);
-    		spheres_file >> s;
-    		getline(spheres_file, s, ' ');
-    		getline(spheres_file, s);
-    		double radius = stod(s);
-    		spheres_file >> s;
-    		getline(spheres_file, s, ' ');
-    		getline(spheres_file, s);
-    		if(s.compare("metal") == 0) {
-    			spheres_file >> s;
-    			getline(spheres_file, s, ' ');
-    			getline(spheres_file, s);
-    			rgb albedo = parse_vector(s);
-    			spheres_file >> s;
-    			getline(spheres_file, s, ' ');
-    			getline(spheres_file, s);
-    			double fuzzyness = stod(s);
-    			scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<Metal>(albedo, fuzzyness)));
-    		}
-    		else if(s.compare("diffuse") == 0) { 
-    			spheres_file >> s;
-    			getline(spheres_file, s, ' ');
-    			getline(spheres_file, s);
-    			rgb albedo = parse_vector(s);
-    			scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<Diffuse>(albedo)));
-    		}
-            else if(s.compare("bp") == 0) { 
-                spheres_file >> s;
-                getline(spheres_file, s, ' ');
-                getline(spheres_file, s);
-                rgb ka = parse_vector(s);
-                spheres_file >> s;
-                getline(spheres_file, s, ' ');
-                getline(spheres_file, s);
-                rgb kd = parse_vector(s);
-                spheres_file >> s;
-                getline(spheres_file, s, ' ');
-                getline(spheres_file, s);
-                rgb ks = parse_vector(s);
-                spheres_file >> s;
-                getline(spheres_file, s, ' ');
-                getline(spheres_file, s);
-                double alpha = stod(s);
-                scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<BP_material>(ka, kd, ks, alpha)));
+    	while(hitables_file >> s) {
+            getline(hitables_file, s, ' ');
+            getline(hitables_file, s);
+            std::string type = s;
+            if(type.compare("sphere") == 0) {
+                hitables_file >> s;
+        		getline(hitables_file, s, ' ');
+        		getline(hitables_file, s);
+        		center = parse_vector(s);
+        		hitables_file >> s;
+        		getline(hitables_file, s, ' ');
+        		getline(hitables_file, s);
+        		radius = stod(s);
             }
-            else if(s.compare("gradient") == 0) {
-                spheres_file >> s;
-                getline(spheres_file, s, ' ');
-                getline(spheres_file, s);
+            else if(type.compare("triangle") == 0) {
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v0 = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v1 = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v2 = parse_vector(s);
+            }
+            hitables_file >> s;
+            getline(hitables_file, s, ' ');
+            getline(hitables_file, s);
+            std::string material = s;
+    		if(material.compare("metal") == 0) {
+    			hitables_file >> s;
+    			getline(hitables_file, s, ' ');
+    			getline(hitables_file, s);
+    			rgb albedo = parse_vector(s);
+    			hitables_file >> s;
+    			getline(hitables_file, s, ' ');
+    			getline(hitables_file, s);
+    			double fuzzyness = stod(s);
+                if(type.compare("sphere") == 0) {
+    		        scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<Metal>(albedo, fuzzyness)));
+                }
+                else if(type.compare("triangle") == 0) {
+                    scene.add_hitable(std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Metal>(albedo, fuzzyness)));
+                }
+    		}
+    		else if(material.compare("diffuse") == 0) { 
+    			hitables_file >> s;
+    			getline(hitables_file, s, ' ');
+    			getline(hitables_file, s);
+    			rgb albedo = parse_vector(s);
+                if(type.compare("sphere") == 0) {
+                    scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<Diffuse>(albedo)));
+                }
+                else if(type.compare("triangle") == 0) {
+                    scene.add_hitable(std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(albedo)));
+                }
+    		}
+            else if(material.compare("bp") == 0) { 
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                rgb ka = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                rgb kd = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                rgb ks = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                double alpha = stod(s);
+                if(type.compare("sphere") == 0) {
+                    scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<BP_material>(ka, kd, ks, alpha)));
+                }
+                else if(type.compare("triangle") == 0) {
+                    scene.add_hitable(std::make_shared<Triangle>(v0, v1, v2, std::make_shared<BP_material>(ka, kd, ks, alpha)));
+                }
+            }
+            else if(material.compare("gradient") == 0) {
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
                 int n = stoi(s);
-                spheres_file >> s;
-                getline(spheres_file, s, ' ');
-                getline(spheres_file, s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
                 rgb outline_color = parse_vector(s);
-                spheres_file >> s;
-                getline(spheres_file, s, ' ');
-                getline(spheres_file, s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
                 rgb shadow_color = parse_vector(s);
-                spheres_file >> s;
+                hitables_file >> s;
                 std::vector<rgb> colors;
                 for(int i = 0; i < n; i++) {
-                    getline(spheres_file, s, ' ');
-                    getline(spheres_file, s, ')');
+                    getline(hitables_file, s, ' ');
+                    getline(hitables_file, s, ')');
                     s += ")";
                     colors.push_back(parse_vector(s));
                 } 
-                spheres_file >> s;
+                hitables_file >> s;
                 std::vector<double> partitions;
-                getline(spheres_file, s, ' ');
+                getline(hitables_file, s, ' ');
                 for(int i = 0; i < n-1; i++) {
-                    getline(spheres_file, s, ' ');
+                    getline(hitables_file, s, ' ');
                     partitions.push_back(stod(s));
                 }
-                getline(spheres_file, s);
+                getline(hitables_file, s);
                 partitions.push_back(stod(s));
-                scene.add_hitable(std::make_shared<Sphere>(center, radius, std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions))); 
+                if(type.compare("sphere") == 0) {
+                    scene.add_hitable(std::make_shared<Sphere>(center, radius, 
+                        std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions)));
+                }
+                else if(type.compare("triangle") == 0) {
+                    scene.add_hitable(std::make_shared<Triangle>(v0, v1, v2, 
+                        std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions)));
+                } 
             }
     	}
 
-    	spheres_file.close();
+    	hitables_file.close();
     }
     else {
-    	std::cout << "Error opening spheres file." << std::endl;
+    	std::cout << "Error opening hitables file." << std::endl;
     }
 }
 

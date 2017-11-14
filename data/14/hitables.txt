@@ -1,21 +1,19 @@
-center: (0, 0, -1)
-radius: 0.5
-material: diffuse
-albedo: (0.8, 0.3, 0.3)
-
+type: sphere
 center: (0, -100.5, -1)
 radius: 100
 material: diffuse
 albedo: (0.8, 0.8, 0)
 
+type: sphere
 center: (1, 0, -1)
 radius: 0.5
 material: metal
 albedo: (0.8, 0.6, 0.2)
 fuzzyness: 1
 
-center: (-1, 0, -1)
-radius: 0.5
-material: metal
-albedo: (0.8, 0.8, 0.8)
-fuzzyness: 0.3
+type: triangle
+v0: (-1.5, 0, -1) 
+v1: (-1, 0.5, -1)
+v2: (-1.5, 1, -1.5)
+material: diffuse
+albedo: (0.2, 0.2, 0.8)

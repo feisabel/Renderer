@@ -10,6 +10,7 @@
 #include "../include/normal2rgb.h"
 #include "../include/cartoon.h"
 #include "../include/sphere.h"
+#include "../include/triangle.h"
 #include "../include/diffuse.h"
 #include "../include/metal.h"
 #include "../include/bp_material.h"
@@ -29,7 +30,7 @@ void parse_background(std::string folder, Scene& scene);
 void parse_camera(std::string folder, Camera& camera);
 void parse_image(std::string folder, Image& image);
 void parse_shader(std::string folder, std::unique_ptr<Shader>& shader);
-void parse_spheres(std::string folder, Scene& scene);
+void parse_hitables(std::string folder, Scene& scene);
 void parse_lights(std::string folder, Scene& scene);
 void parse_input(std::string folder, Scene& scene, Image& image, Camera& camera, std::unique_ptr<Shader>& shader);
 

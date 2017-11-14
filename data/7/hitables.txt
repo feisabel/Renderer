@@ -1,3 +1,4 @@
+type: sphere
 center: (0, 0, -1)
 radius: 0.5
 material: bp
@@ -6,6 +7,7 @@ kd: (0.7, 0.2, 0.1)
 ks: (1, 1, 1)
 alpha: 64
 
+type: sphere
 center: (0, -100.5, -1)
 radius: 100
 material: bp

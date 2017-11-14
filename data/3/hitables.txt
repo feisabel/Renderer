@@ -1,18 +1,22 @@
+type: sphere
 center: (0, 0, -1)
 radius: 0.5
 material: diffuse
 albedo: (1, 0, 0)
 
+type: sphere
 center: (0, -100.5, -1)
 radius: 100
 material: diffuse
 albedo: (0, 1, 0)
 
+type: sphere
 center: (0.5, 0, -1.4)
 radius: 0.5
 material: diffuse
 albedo: (0, 0, 1)
 
+type: sphere
 center: (-0.3, 0, -0.6)
 radius: 0.4
 material: diffuse

@@ -1,3 +1,4 @@
+type: sphere
 center: (0, 0.5, 0)
 radius: 0.5
 material: bp
@@ -6,6 +7,7 @@ kd: (0.9, 0.2, 0.1)
 ks: (0.8, 0.8, 0.8)
 alpha: 256
 
+type: sphere
 center: (0.5, 0.5, -1)
 radius: 0.5
 material: bp
@@ -14,6 +16,7 @@ kd: (0.2, 0.9, 0.2)
 ks: (0.8, 0.8, 0.8)
 alpha: 256
 
+type: sphere
 center: (1, 0.5, -2)
 radius: 0.5
 material: bp
@@ -22,6 +25,7 @@ kd: (0.1, 0.2, 0.9)
 ks: (0.8, 0.8, 0.6)
 alpha: 256
 
+type: sphere
 center: (-0.5, 0.5, 1)
 radius: 0.5
 material: bp
@@ -30,6 +34,7 @@ kd: (0.2, 1.0, 1.0)
 ks: (0.8, 0.8, 0.6)
 alpha: 256
 
+type: sphere
 center: (-1, 0.5, 2)
 radius: 0.5
 material: bp
@@ -38,6 +43,7 @@ kd: (1.0, 0.2, 1.0)
 ks: (0.8, 0.8, 0.6)
 alpha: 256
 
+type: sphere
 center: (-1.5, 0.5, 3)
 radius: 0.5
 material: bp
@@ -46,8 +52,20 @@ kd: (1.0, 1.0, 0.2)
 ks: (0.8, 0.8, 0.6)
 alpha: 256
 
-center: (0, -1000, -1)
-radius: 1000
+type: triangle
+v0: (-1000, 0, 1000)
+v1: (1000, 0, 1000)
+v2: (1000, 0, -1000)
+material: bp
+ka: (0.1, 0.1, 0.1)
+kd: (0.419, 0.556, 0.137)
+ks: (0.0, 0.0, 0.0)
+alpha: 8
+
+type: triangle
+v0: (-1000, 0, 1000)
+v1: (1000, 0, -1000)
+v2: (-1000, 0, -1000)
 material: bp
 ka: (0.1, 0.1, 0.1)
 kd: (0.419, 0.556, 0.137)

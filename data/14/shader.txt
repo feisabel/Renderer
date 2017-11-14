@@ -1,0 +1,2 @@
+shader: recursive
+recursions: 3
