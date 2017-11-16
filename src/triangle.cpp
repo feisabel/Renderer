@@ -33,6 +33,5 @@ bool Triangle::hit(const Ray &ray, hit_record &rec) const {
 	rec.p = ray.point_at(t);
 	rec.normal = unit_vector(cross(e1,e2));
 	rec.material = material;
-
 	return true;
 }

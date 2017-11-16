@@ -215,7 +215,7 @@ void parse_hitables(std::string folder, Scene& scene) {
 	std::ifstream hitables_file ("data/"+folder+"/hitables.txt");
     if (hitables_file.is_open()) {
     	std::string s;
-        point3 center, v0, v1, v2;
+        point3 center, v0, v1, v2, v3, v4, v5, v6, v7;
         double radius;
         std::shared_ptr<Hitable> hitable;
     	
@@ -246,6 +246,40 @@ void parse_hitables(std::string folder, Scene& scene) {
                 getline(hitables_file, s, ' ');
                 getline(hitables_file, s);
                 v2 = parse_vector(s);
+            }
+            else if(type.compare("box") == 0) {
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v0 = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v1 = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v2 = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v3 = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v4 = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v5 = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v6 = parse_vector(s);
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                v7 = parse_vector(s);
             }
             hitables_file >> s;
             getline(hitables_file, s, ' ');
@@ -281,6 +315,16 @@ void parse_hitables(std::string folder, Scene& scene) {
                 else if(type.compare("triangle") == 0) {
                     hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(albedo));
                     scene.add_hitable(hitable);
+                }
+                else if(type.compare("box") == 0) {
+                    scene.add_hitable(std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(albedo)));
+                    scene.add_hitable(std::make_shared<Triangle>(v0, v2, v3, std::make_shared<Diffuse>(albedo)));
+                    scene.add_hitable(std::make_shared<Triangle>(v4, v5, v6, std::make_shared<Diffuse>(albedo)));
+                    scene.add_hitable(std::make_shared<Triangle>(v4, v6, v7, std::make_shared<Diffuse>(albedo)));
+                    scene.add_hitable(std::make_shared<Triangle>(v3, v2, v6, std::make_shared<Diffuse>(albedo)));
+                    scene.add_hitable(std::make_shared<Triangle>(v3, v6, v7, std::make_shared<Diffuse>(albedo)));
+                    scene.add_hitable(std::make_shared<Triangle>(v0, v1, v5, std::make_shared<Diffuse>(albedo)));
+                    scene.add_hitable(std::make_shared<Triangle>(v0, v5, v4, std::make_shared<Diffuse>(albedo)));
                 }
     		}
             else if(material.compare("bp") == 0) { 
@@ -357,11 +401,34 @@ void parse_hitables(std::string folder, Scene& scene) {
             mat4 t;
             for(int i = 0; i < transfs; i++) {
                 hitables_file >> s;
+                std::string transform_type = s;
                 getline(hitables_file, s, ' ');
-                getline(hitables_file, s);
-                vec3 v = parse_vector(s);
                 mat4 m;
-                m.translate(v);
+                if(transform_type.compare("translate:") == 0) {
+                    getline(hitables_file, s);
+                    vec3 v = parse_vector(s);                    
+                    m.translate(v);
+                }
+                else if(transform_type.compare("scale:") == 0) {
+                    getline(hitables_file, s);
+                    vec3 v = parse_vector(s);
+                    m.scale(v);
+                }
+                else if(transform_type.compare("rotate:") == 0) {
+                    getline(hitables_file, s, ' ');
+                    double angle = stod(s);
+                    getline(hitables_file, s);
+                    char c = s[0];
+                    vec3 centroid = (v0 + v1 + v2) / 3;
+                    mat4 aux1, aux2;
+                    centroid = - centroid;
+                    aux1.translate(centroid);
+                    t *= aux1;
+                    aux2.rotate(angle, c);
+                    t *= aux2;
+                    centroid = - centroid;
+                    m.translate(centroid);
+                }
                 t *= m;
             }
             if(transfs > 0) {
