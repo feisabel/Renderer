@@ -11,5 +11,14 @@ radius: 0.5
 material: metal
 albedo: (0.8, 0.6, 0.2)
 fuzzyness: 1
-transformations: 1
-translate: (-1, 0, 0)
+transformations: 0
+
+type: triangle
+v0: (-1, 0, -2) 
+v1: (-0.5, 0.5, -2)
+v2: (-0.8, 0.7, -2)
+material: diffuse
+albedo: (0.2, 0.2, 0.8)
+transformations: 2
+rotate: 45 z
+translate: (-0.7, 0, 0)

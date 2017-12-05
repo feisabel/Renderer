@@ -1,2 +1,2 @@
-shader: recursive
-recursions: 3
+shader: blinnphong
+shadow: yes

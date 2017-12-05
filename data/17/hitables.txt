@@ -14,10 +14,10 @@ fuzzyness: 1
 transformations: 0
 
 type: triangle
-v0: (-1.5, 0, -1) 
-v1: (-1, 0.5, -1)
-v2: (-1.5, 1, -1)
+v0: (-1, 0, -2) 
+v1: (-0.5, 0.5, -2)
+v2: (-0.8, 0.7, -2)
 material: diffuse
 albedo: (0.2, 0.2, 0.8)
 transformations: 1
-translate: (1, 0, 0)
+rotate: 45 z
