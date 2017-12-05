@@ -1,0 +1,9 @@
+ambient_light: (0.4, 0.4, 0.4)
+
+type: area
+lower_left_corner: (-2, 0, 1)
+horizontal: (4, 0, 0)
+vertical: (0, 0, 2)
+samples: 3
+diffuse_intensity: (1, 1, 1)
+specular_intensity: (1, 1, 1)

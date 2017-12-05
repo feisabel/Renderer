@@ -506,6 +506,47 @@ void parse_lights(std::string folder, Scene& scene) {
                 rgb specular_intensity = parse_vector(s);
                 scene.add_light(std::make_shared<Spotlight>(position, direction, angle, diffuse_intensity, specular_intensity));
             }
+            if(s.compare("area") == 0) {
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                point3 llc = parse_vector(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                vec3 horizontal = parse_vector(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                vec3 vertical = parse_vector(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                int samples = stoi(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                rgb diffuse_intensity = parse_vector(s);
+                lights_file >> s;
+                getline(lights_file, s, ' ');
+                getline(lights_file, s);
+                rgb specular_intensity = parse_vector(s);
+                double height = vertical.length();
+                double width = horizontal.length();
+                diffuse_intensity /= ((height+1) * (width+1) * samples);
+                specular_intensity /= ((height+1) * (width+1) * samples);
+                std::random_device rd;
+                std::mt19937 gen(rd());
+                for(int i = height; i >= 0; i--) {
+                    for(int j = 0; j <= width; j++) {
+                        for(int k = 0; k < samples; k++) {
+                            double u = (double(j) + std::generate_canonical<double,10>(gen)) / (width+1);
+                            double v = (double(i) + std::generate_canonical<double,10>(gen)) / (height+1);
+                            point3 position = llc + u * horizontal + v * vertical;
+                            scene.add_light(std::make_shared<Point_light>(position, diffuse_intensity, specular_intensity));
+                        }
+                    }
+                }
+            }
     	}
 
     	lights_file.close();
