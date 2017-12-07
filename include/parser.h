@@ -18,6 +18,7 @@
 #include "../include/point_light.h"
 #include "../include/spotlight.h"
 #include "../include/dielectric.h"
+#include "../include/solid_texture.h"
 
 #include <iostream>
 #include <fstream>

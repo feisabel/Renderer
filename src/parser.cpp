@@ -285,25 +285,7 @@ void parse_hitables(std::string folder, Scene& scene) {
             getline(hitables_file, s, ' ');
             getline(hitables_file, s);
             std::string material = s;
-    		if(material.compare("metal") == 0) {
-    			hitables_file >> s;
-    			getline(hitables_file, s, ' ');
-    			getline(hitables_file, s);
-    			rgb albedo = parse_vector(s);
-    			hitables_file >> s;
-    			getline(hitables_file, s, ' ');
-    			getline(hitables_file, s);
-    			double fuzzyness = stod(s);
-                if(type.compare("sphere") == 0) {
-                    hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Metal>(albedo, fuzzyness));
-    		        scene.add_hitable(hitable);
-                }
-                else if(type.compare("triangle") == 0) {
-                    hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Metal>(albedo, fuzzyness));
-                    scene.add_hitable(hitable);
-                }
-    		}
-            else if(material.compare("dielectric") == 0) {
+            if(material.compare("dielectric") == 0) {
                 hitables_file >> s;
                 getline(hitables_file, s, ' ');
                 getline(hitables_file, s);
@@ -317,28 +299,52 @@ void parse_hitables(std::string folder, Scene& scene) {
                     scene.add_hitable(hitable);
                 }
             }
-    		else if(material.compare("diffuse") == 0) { 
-    			hitables_file >> s;
-    			getline(hitables_file, s, ' ');
-    			getline(hitables_file, s);
-    			rgb albedo = parse_vector(s);
-                if(type.compare("sphere") == 0) {
-                    hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Diffuse>(albedo));
-                    scene.add_hitable(hitable);
+    		else if(material.compare("metal") == 0 || material.compare("diffuse") == 0) {
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                std::string texture_type = s;
+                std::shared_ptr<Texture> texture;
+                if(texture_type.compare("solid") == 0) {
+                    hitables_file >> s;
+                    getline(hitables_file, s, ' ');
+                    getline(hitables_file, s);
+                    rgb albedo = parse_vector(s);
+                    texture = std::make_shared<Solid_texture>(albedo);
                 }
-                else if(type.compare("triangle") == 0) {
-                    hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(albedo));
-                    scene.add_hitable(hitable);
+                if(material.compare("metal") == 0) {
+        			hitables_file >> s;
+        			getline(hitables_file, s, ' ');
+        			getline(hitables_file, s);
+        			double fuzzyness = stod(s);
+                    if(type.compare("sphere") == 0) {
+                        hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Metal>(texture, fuzzyness));
+        		        scene.add_hitable(hitable);
+                    }
+                    else if(type.compare("triangle") == 0) {
+                        hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Metal>(texture, fuzzyness));
+                        scene.add_hitable(hitable);
+                    }
                 }
-                else if(type.compare("box") == 0) {
-                    scene.add_hitable(std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(albedo)));
-                    scene.add_hitable(std::make_shared<Triangle>(v0, v2, v3, std::make_shared<Diffuse>(albedo)));
-                    scene.add_hitable(std::make_shared<Triangle>(v4, v5, v6, std::make_shared<Diffuse>(albedo)));
-                    scene.add_hitable(std::make_shared<Triangle>(v4, v6, v7, std::make_shared<Diffuse>(albedo)));
-                    scene.add_hitable(std::make_shared<Triangle>(v3, v2, v6, std::make_shared<Diffuse>(albedo)));
-                    scene.add_hitable(std::make_shared<Triangle>(v3, v6, v7, std::make_shared<Diffuse>(albedo)));
-                    scene.add_hitable(std::make_shared<Triangle>(v0, v1, v5, std::make_shared<Diffuse>(albedo)));
-                    scene.add_hitable(std::make_shared<Triangle>(v0, v5, v4, std::make_shared<Diffuse>(albedo)));
+                else if(material.compare("diffuse") == 0){
+                    if(type.compare("sphere") == 0) {
+                        hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Diffuse>(texture));
+                        scene.add_hitable(hitable);
+                    }
+                    else if(type.compare("triangle") == 0) {
+                        hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(texture));
+                        scene.add_hitable(hitable);
+                    }
+                    else if(type.compare("box") == 0) {
+                        scene.add_hitable(std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(texture)));
+                        scene.add_hitable(std::make_shared<Triangle>(v0, v2, v3, std::make_shared<Diffuse>(texture)));
+                        scene.add_hitable(std::make_shared<Triangle>(v4, v5, v6, std::make_shared<Diffuse>(texture)));
+                        scene.add_hitable(std::make_shared<Triangle>(v4, v6, v7, std::make_shared<Diffuse>(texture)));
+                        scene.add_hitable(std::make_shared<Triangle>(v3, v2, v6, std::make_shared<Diffuse>(texture)));
+                        scene.add_hitable(std::make_shared<Triangle>(v3, v6, v7, std::make_shared<Diffuse>(texture)));
+                        scene.add_hitable(std::make_shared<Triangle>(v0, v1, v5, std::make_shared<Diffuse>(texture)));
+                        scene.add_hitable(std::make_shared<Triangle>(v0, v5, v4, std::make_shared<Diffuse>(texture)));
+                    }
                 }
     		}
             else if(material.compare("bp") == 0) { 

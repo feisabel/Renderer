@@ -2,6 +2,7 @@ type: sphere
 center: (0, 0, -1)
 radius: 0.5
 material: diffuse
+texture: solid
 albedo: (1, 0, 0)
 transformations: 0
 
@@ -9,6 +10,7 @@ type: sphere
 center: (0, -100.5, -1)
 radius: 100
 material: diffuse
+texture: solid
 albedo: (0, 1, 0)
 transformations: 0
 
@@ -16,6 +18,7 @@ type: sphere
 center: (0.5, 0, -1.4)
 radius: 0.5
 material: diffuse
+texture: solid
 albedo: (0, 0, 1)
 transformations: 0
 
@@ -23,5 +26,6 @@ type: sphere
 center: (-0.3, 0, -0.6)
 radius: 0.4
 material: diffuse
+texture: solid
 albedo: (0.5, 0, 0.5)
 transformations: 0
