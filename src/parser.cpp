@@ -211,6 +211,28 @@ void parse_shader(std::string folder, std::unique_ptr<Shader>& shader) {
     }
 }
 
+std::shared_ptr<Texture> get_texture(std::ifstream& hitables_file) {
+    std::string s;
+    hitables_file >> s;
+    getline(hitables_file, s, ' ');
+    getline(hitables_file, s);
+    std::string texture_type = s;
+    std::shared_ptr<Texture> texture;
+    if(texture_type.compare("solid") == 0) {
+        hitables_file >> s;
+        getline(hitables_file, s, ' ');
+        getline(hitables_file, s);
+        rgb albedo = parse_vector(s);
+        texture = std::make_shared<Solid_texture>(albedo);
+    }
+    else if(texture_type.compare("checker") == 0) {
+        std::shared_ptr<Texture> texture1 = get_texture(hitables_file);
+        std::shared_ptr<Texture> texture2 = get_texture(hitables_file);
+        texture = std::make_shared<Checker_texture>(texture1, texture2);
+    }
+    return texture;
+}
+
 void parse_hitables(std::string folder, Scene& scene) {
 	std::ifstream hitables_file ("data/"+folder+"/hitables.txt");
     if (hitables_file.is_open()) {
@@ -300,18 +322,7 @@ void parse_hitables(std::string folder, Scene& scene) {
                 }
             }
     		else if(material.compare("metal") == 0 || material.compare("diffuse") == 0) {
-                hitables_file >> s;
-                getline(hitables_file, s, ' ');
-                getline(hitables_file, s);
-                std::string texture_type = s;
-                std::shared_ptr<Texture> texture;
-                if(texture_type.compare("solid") == 0) {
-                    hitables_file >> s;
-                    getline(hitables_file, s, ' ');
-                    getline(hitables_file, s);
-                    rgb albedo = parse_vector(s);
-                    texture = std::make_shared<Solid_texture>(albedo);
-                }
+                std::shared_ptr<Texture> texture = get_texture(hitables_file);
                 if(material.compare("metal") == 0) {
         			hitables_file >> s;
         			getline(hitables_file, s, ' ');

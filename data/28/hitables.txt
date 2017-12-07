@@ -1,0 +1,21 @@
+type: sphere
+center: (0, -10, 0)
+radius: 10
+material: diffuse
+texture: checker
+first_texture: solid
+albedo: (0.2, 0.3, 0.1)
+second_texture: solid
+albedo: (0.9, 0.9, 0.9)
+transformations: 0
+
+type: sphere
+center: (0, 10, 0)
+radius: 10
+material: diffuse
+texture: checker
+first_texture: solid
+albedo: (0.2, 0.3, 0.1)
+second_texture: solid
+albedo: (0.9, 0.9, 0.9)
+transformations: 0

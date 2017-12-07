@@ -19,6 +19,7 @@
 #include "../include/spotlight.h"
 #include "../include/dielectric.h"
 #include "../include/solid_texture.h"
+#include "../include/checker_texture.h"
 
 #include <iostream>
 #include <fstream>
@@ -35,5 +36,7 @@ void parse_shader(std::string folder, std::unique_ptr<Shader>& shader);
 void parse_hitables(std::string folder, Scene& scene);
 void parse_lights(std::string folder, Scene& scene);
 void parse_input(std::string folder, Scene& scene, Image& image, Camera& camera, std::unique_ptr<Shader>& shader);
+
+std::shared_ptr<Texture> get_texture(std::ifstream& hitables_file);
 
 #endif

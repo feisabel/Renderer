@@ -2,8 +2,11 @@ type: sphere
 center: (0, 0, -1)
 radius: 0.5
 material: diffuse
-texture: solid
+texture: checker
+first_texture: solid
 albedo: (0.8, 0.3, 0.3)
+second_texture: solid
+albedo: (0.3, 0.8, 0.3)
 transformations: 0
 
 type: sphere
@@ -18,8 +21,11 @@ type: sphere
 center: (1, 0, -1)
 radius: 0.5
 material: metal
-texture: solid
+texture: checker
+first_texture: solid
 albedo: (0.8, 0.6, 0.2)
+second_texture: solid
+albedo: (0.6, 0.8, 0.2)
 fuzzyness: 1
 transformations: 0
 
