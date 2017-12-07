@@ -17,6 +17,7 @@
 #include "../include/direction_light.h"
 #include "../include/point_light.h"
 #include "../include/spotlight.h"
+#include "../include/dielectric.h"
 
 #include <iostream>
 #include <fstream>

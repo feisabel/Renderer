@@ -303,6 +303,20 @@ void parse_hitables(std::string folder, Scene& scene) {
                     scene.add_hitable(hitable);
                 }
     		}
+            else if(material.compare("dielectric") == 0) {
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                double ref_idx = stod(s);
+                if(type.compare("sphere") == 0) {
+                    hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Dielectric>(ref_idx));
+                    scene.add_hitable(hitable);
+                }
+                else if(type.compare("triangle") == 0) {
+                    hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Dielectric>(ref_idx));
+                    scene.add_hitable(hitable);
+                }
+            }
     		else if(material.compare("diffuse") == 0) { 
     			hitables_file >> s;
     			getline(hitables_file, s, ' ');
@@ -470,7 +484,7 @@ void parse_lights(std::string folder, Scene& scene) {
         		rgb specular_intensity = parse_vector(s);
         		scene.add_light(std::make_shared<Direction_light>(direction, diffuse_intensity, specular_intensity));
             }
-            if(s.compare("point") == 0) {
+            else if(s.compare("point") == 0) {
                 getline(lights_file, s, ' ');
                 getline(lights_file, s);
                 point3 position = parse_vector(s);
@@ -484,7 +498,7 @@ void parse_lights(std::string folder, Scene& scene) {
                 rgb specular_intensity = parse_vector(s);
                 scene.add_light(std::make_shared<Point_light>(position, diffuse_intensity, specular_intensity));
             }
-            if(s.compare("spotlight") == 0) {
+            else if(s.compare("spotlight") == 0) {
                 getline(lights_file, s, ' ');
                 getline(lights_file, s);
                 point3 position = parse_vector(s);
@@ -506,7 +520,7 @@ void parse_lights(std::string folder, Scene& scene) {
                 rgb specular_intensity = parse_vector(s);
                 scene.add_light(std::make_shared<Spotlight>(position, direction, angle, diffuse_intensity, specular_intensity));
             }
-            if(s.compare("area") == 0) {
+            else if(s.compare("area") == 0) {
                 getline(lights_file, s, ' ');
                 getline(lights_file, s);
                 point3 llc = parse_vector(s);
