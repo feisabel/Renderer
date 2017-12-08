@@ -341,7 +341,7 @@ void parse_hitables(std::string folder, Scene& scene) {
                 double ref_idx = stod(s);
                 material = std::make_shared<Dielectric>(ref_idx);
             }
-    		else if(material_type.compare("metal") == 0 || material_type.compare("diffuse") == 0) {
+    		else if(material_type.compare("metal") == 0 || material_type.compare("diffuse") == 0 || material_type.compare("light") == 0) {
                 std::shared_ptr<Texture> texture = get_texture(hitables_file);
                 if(material_type.compare("metal") == 0) {
         			hitables_file >> s;
@@ -352,6 +352,9 @@ void parse_hitables(std::string folder, Scene& scene) {
                 }
                 else if(material_type.compare("diffuse") == 0){
                     material = std::make_shared<Diffuse>(texture);
+                }
+                else if(material_type.compare("light") == 0) {
+                    material = std::make_shared<Light_material>(texture);
                 }
     		}
             else if(material_type.compare("bp") == 0) { 

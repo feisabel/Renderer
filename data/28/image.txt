@@ -1,4 +1,4 @@
 width: 800
 height: 400
 codification: binary
-samples: 32
+samples: 64

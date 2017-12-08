@@ -1,12 +1,9 @@
 type: sphere
-center: (-1, 0, -1)
+center: (1, 0, -1)
 radius: 0.5
 material: diffuse
-texture: checker
-first_texture: solid
-albedo: (1, 1, 1)
-second_texture: solid
-albedo: (0, 0, 0)
+texture: solid
+albedo: (0.8, 0.3, 0.3)
 transformations: 0
 
 type: sphere
@@ -20,16 +17,16 @@ transformations: 0
 type: sphere
 center: (0, 0, -1)
 radius: 0.5
-material: metal
+material: light
 texture: solid
-albedo: (0.8, 0.8, 0.8)
-fuzzyness: 0.1
+albedo: (1, 1, 1)
 transformations: 0
 
 type: sphere
-center: (1, 0, -1)
+center: (-1, 0, -1)
 radius: 0.5
-material: diffuse
-texture: perlin
-scale: 2
+material: metal
+texture: solid
+albedo: (0.8, 0.8, 0.8)
+fuzzyness: 0.3
 transformations: 0

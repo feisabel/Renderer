@@ -22,6 +22,7 @@
 #include "../include/checker_texture.h"
 #include "../include/perlin_texture.h"
 #include "../include/image_texture.h"
+#include "../include/light_material.h"
 
 #include <iostream>
 #include <fstream>

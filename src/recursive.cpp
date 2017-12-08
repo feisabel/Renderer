@@ -13,11 +13,12 @@ rgb Recursive::recursive_color(const Ray& ray, const Scene& scene, int step) con
     if (scene.hit(ray, rec)) {
         vec3 attenuation;
         Ray scattered;
+        rgb emitted = rec.material->emit(rec.u, rec.v, rec.p);
         if(rec.material->scatter(ray, rec, attenuation, scattered)) {
-            return attenuation  * recursive_color(scattered, scene, step-1);
+            return emitted + attenuation  * recursive_color(scattered, scene, step-1);
         }
         else { 
-            return rgb(0,0,0); 
+            return emitted; 
         }
     }
     else {
