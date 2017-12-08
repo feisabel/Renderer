@@ -14,6 +14,10 @@ bool Sphere::hit(const Ray &ray, hit_record &rec) const {
         	rec.t = t;
         	rec.p = ray.point_at(t);
         	rec.normal = (rec.p - center)/radius;
+            double phi = atan2(rec.normal.z(), rec.normal.x());
+            double theta = asin(rec.normal.y());
+            rec.u = 1 - (phi + M_PI)/(2 * M_PI);
+            rec.v = (theta + M_PI/2)/M_PI;
             rec.material = material;
         	return true;
         }
@@ -22,6 +26,10 @@ bool Sphere::hit(const Ray &ray, hit_record &rec) const {
         	rec.t = t;
         	rec.p = ray.point_at(t);
         	rec.normal = (rec.p - center)/radius;
+            double phi = atan2(rec.normal.z(), rec.normal.x());
+            double theta = asin(rec.normal.y());
+            rec.u = 1 - (phi + M_PI)/(2 * M_PI);
+            rec.v = (theta + M_PI/2)/M_PI;
             rec.material = material;
         	return true;
         }

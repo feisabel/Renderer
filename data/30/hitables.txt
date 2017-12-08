@@ -1,0 +1,15 @@
+type: sphere
+center: (0, 0, -1)
+radius: 0.5
+material: diffuse
+texture: image
+image_name: alfredo4.png
+transformations: 0
+
+type: sphere
+center: (0, -100.5, -1)
+radius: 100
+material: diffuse
+texture: solid
+albedo: (0.8, 0.8, 0)
+transformations: 0

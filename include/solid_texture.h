@@ -8,7 +8,8 @@ class Solid_texture : public Texture {
 		rgb color;
 	public:
 		Solid_texture(rgb c_) : color(c_) {}
-		vec3 value(double u, double v, const vec3& p) const { return color; }
+		vec3 value(double u, double v, const vec3& p) const { 
+			return color; }
 };
 
 #endif

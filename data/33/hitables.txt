@@ -1,0 +1,14 @@
+type: sphere
+center: (0, -100.5, -1)
+radius: 100
+material: diffuse
+texture: solid
+albedo: (0.8, 0.8, 0)
+transformations: 0
+
+type: mesh
+name: cube.obj
+material: diffuse
+texture: solid
+albedo: (1, 0, 0.5)
+transformations: 0

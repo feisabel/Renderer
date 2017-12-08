@@ -1,4 +1,7 @@
 #include "../include/parser.h"
+#include "../include/OBJ_Loader.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "../include/stb_image.h"
 
 void parse_input(std::string folder, Scene& scene, Image& image, Camera& camera, std::unique_ptr<Shader>& shader) {
     parse_background(folder, scene);
@@ -230,6 +233,22 @@ std::shared_ptr<Texture> get_texture(std::ifstream& hitables_file) {
         std::shared_ptr<Texture> texture2 = get_texture(hitables_file);
         texture = std::make_shared<Checker_texture>(texture1, texture2);
     }
+    else if(texture_type.compare("perlin") == 0) {
+        hitables_file >> s;
+        getline(hitables_file, s, ' ');
+        getline(hitables_file, s);
+        double scale = stod(s);
+        texture = std::make_shared<Perlin_texture>(scale);
+    }
+    else if(texture_type.compare("image") == 0) {
+        hitables_file >> s;
+        getline(hitables_file, s, ' ');
+        getline(hitables_file, s);
+        std::string image_name = "data/textures/" + s;
+        int width, height, dummy;
+        unsigned char* data = stbi_load(image_name.c_str(), &width, &height, &dummy, 3);
+        texture = std::make_shared<Image_texture>(data, width, height);
+    }
     return texture;
 }
 
@@ -239,7 +258,9 @@ void parse_hitables(std::string folder, Scene& scene) {
     	std::string s;
         point3 center, v0, v1, v2, v3, v4, v5, v6, v7;
         double radius;
+        std::string mesh_file;
         std::shared_ptr<Hitable> hitable;
+        std::shared_ptr<Material> material;
     	
     	while(hitables_file >> s) {
             getline(hitables_file, s, ' ');
@@ -303,62 +324,37 @@ void parse_hitables(std::string folder, Scene& scene) {
                 getline(hitables_file, s);
                 v7 = parse_vector(s);
             }
+            else if(type.compare("mesh") == 0) {
+                hitables_file >> s;
+                getline(hitables_file, s, ' ');
+                getline(hitables_file, s);
+                mesh_file = s;
+            }
             hitables_file >> s;
             getline(hitables_file, s, ' ');
             getline(hitables_file, s);
-            std::string material = s;
-            if(material.compare("dielectric") == 0) {
+            std::string material_type = s;
+            if(material_type.compare("dielectric") == 0) {
                 hitables_file >> s;
                 getline(hitables_file, s, ' ');
                 getline(hitables_file, s);
                 double ref_idx = stod(s);
-                if(type.compare("sphere") == 0) {
-                    hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Dielectric>(ref_idx));
-                    scene.add_hitable(hitable);
-                }
-                else if(type.compare("triangle") == 0) {
-                    hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Dielectric>(ref_idx));
-                    scene.add_hitable(hitable);
-                }
+                material = std::make_shared<Dielectric>(ref_idx);
             }
-    		else if(material.compare("metal") == 0 || material.compare("diffuse") == 0) {
+    		else if(material_type.compare("metal") == 0 || material_type.compare("diffuse") == 0) {
                 std::shared_ptr<Texture> texture = get_texture(hitables_file);
-                if(material.compare("metal") == 0) {
+                if(material_type.compare("metal") == 0) {
         			hitables_file >> s;
         			getline(hitables_file, s, ' ');
         			getline(hitables_file, s);
         			double fuzzyness = stod(s);
-                    if(type.compare("sphere") == 0) {
-                        hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Metal>(texture, fuzzyness));
-        		        scene.add_hitable(hitable);
-                    }
-                    else if(type.compare("triangle") == 0) {
-                        hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Metal>(texture, fuzzyness));
-                        scene.add_hitable(hitable);
-                    }
+                    material = std::make_shared<Metal>(texture, fuzzyness);
                 }
-                else if(material.compare("diffuse") == 0){
-                    if(type.compare("sphere") == 0) {
-                        hitable = std::make_shared<Sphere>(center, radius, std::make_shared<Diffuse>(texture));
-                        scene.add_hitable(hitable);
-                    }
-                    else if(type.compare("triangle") == 0) {
-                        hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(texture));
-                        scene.add_hitable(hitable);
-                    }
-                    else if(type.compare("box") == 0) {
-                        scene.add_hitable(std::make_shared<Triangle>(v0, v1, v2, std::make_shared<Diffuse>(texture)));
-                        scene.add_hitable(std::make_shared<Triangle>(v0, v2, v3, std::make_shared<Diffuse>(texture)));
-                        scene.add_hitable(std::make_shared<Triangle>(v4, v5, v6, std::make_shared<Diffuse>(texture)));
-                        scene.add_hitable(std::make_shared<Triangle>(v4, v6, v7, std::make_shared<Diffuse>(texture)));
-                        scene.add_hitable(std::make_shared<Triangle>(v3, v2, v6, std::make_shared<Diffuse>(texture)));
-                        scene.add_hitable(std::make_shared<Triangle>(v3, v6, v7, std::make_shared<Diffuse>(texture)));
-                        scene.add_hitable(std::make_shared<Triangle>(v0, v1, v5, std::make_shared<Diffuse>(texture)));
-                        scene.add_hitable(std::make_shared<Triangle>(v0, v5, v4, std::make_shared<Diffuse>(texture)));
-                    }
+                else if(material_type.compare("diffuse") == 0){
+                    material = std::make_shared<Diffuse>(texture);
                 }
     		}
-            else if(material.compare("bp") == 0) { 
+            else if(material_type.compare("bp") == 0) { 
                 hitables_file >> s;
                 getline(hitables_file, s, ' ');
                 getline(hitables_file, s);
@@ -375,16 +371,9 @@ void parse_hitables(std::string folder, Scene& scene) {
                 getline(hitables_file, s, ' ');
                 getline(hitables_file, s);
                 double alpha = stod(s);
-                if(type.compare("sphere") == 0) {
-                    hitable = std::make_shared<Sphere>(center, radius, std::make_shared<BP_material>(ka, kd, ks, alpha));
-                    scene.add_hitable(hitable);
-                }
-                else if(type.compare("triangle") == 0) {
-                    hitable = std::make_shared<Triangle>(v0, v1, v2, std::make_shared<BP_material>(ka, kd, ks, alpha));
-                    scene.add_hitable(hitable);
-                }
+                material = std::make_shared<BP_material>(ka, kd, ks, alpha);
             }
-            else if(material.compare("gradient") == 0) {
+            else if(material_type.compare("gradient") == 0) {
                 hitables_file >> s;
                 getline(hitables_file, s, ' ');
                 getline(hitables_file, s);
@@ -414,16 +403,7 @@ void parse_hitables(std::string folder, Scene& scene) {
                 }
                 getline(hitables_file, s);
                 partitions.push_back(stod(s));
-                if(type.compare("sphere") == 0) {
-                    hitable = std::make_shared<Sphere>(center, radius, 
-                        std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions));
-                    scene.add_hitable(hitable);
-                }
-                else if(type.compare("triangle") == 0) {
-                    hitable = std::make_shared<Triangle>(v0, v1, v2, 
-                        std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions));
-                    scene.add_hitable(hitable);
-                } 
+                material = std::make_shared<Gradient>(n, outline_color, shadow_color, colors, partitions);
             }
             hitables_file >> s;
             getline(hitables_file, s, ' ');
@@ -462,10 +442,55 @@ void parse_hitables(std::string folder, Scene& scene) {
                 }
                 t *= m;
             }
-            if(transfs > 0) {
-                hitable->transform(t);
+            if(type.compare("sphere") == 0) {
+                hitable = std::make_shared<Sphere>(center, radius, material);
+                if(transfs > 0) {
+                    hitable->transform(t);
+                }
+                scene.add_hitable(hitable);
             }
-    	}
+            else if(type.compare("triangle")==0) {
+                hitable = std::make_shared<Triangle>(v0, v1, v2, material);
+                if(transfs > 0) {
+                    hitable->transform(t);
+                }
+                scene.add_hitable(hitable);
+            }
+            else if(type.compare("box") == 0) {
+                scene.add_hitable(std::make_shared<Triangle>(v0, v1, v2, material));
+                scene.add_hitable(std::make_shared<Triangle>(v0, v2, v3, material));
+                scene.add_hitable(std::make_shared<Triangle>(v4, v5, v6, material));
+                scene.add_hitable(std::make_shared<Triangle>(v4, v6, v7, material));
+                scene.add_hitable(std::make_shared<Triangle>(v3, v2, v6, material));
+                scene.add_hitable(std::make_shared<Triangle>(v3, v6, v7, material));
+                scene.add_hitable(std::make_shared<Triangle>(v0, v1, v5, material));
+                scene.add_hitable(std::make_shared<Triangle>(v0, v5, v4, material));
+            }
+            else if(type.compare("mesh") == 0) {
+                objl::Loader loader;
+                std::string mesh_path = "data/meshes/" + mesh_file;
+                loader.LoadFile(mesh_path);
+                for(int i = 0; i < loader.LoadedMeshes.size(); i++) {
+                    objl::Mesh mesh = loader.LoadedMeshes[i];
+                    for(int j = 0; j < mesh.Indices.size(); j += 3) {
+                        int vrtx_idx;
+
+                        vrtx_idx = mesh.Indices[j];
+                        v0 = vec3(mesh.Vertices[vrtx_idx].Position.X, mesh.Vertices[vrtx_idx].Position.Y, mesh.Vertices[vrtx_idx].Position.Z);
+                        vrtx_idx = mesh.Indices[j+1];
+                        v1 = vec3(mesh.Vertices[vrtx_idx].Position.X, mesh.Vertices[vrtx_idx].Position.Y, mesh.Vertices[vrtx_idx].Position.Z);
+                        vrtx_idx = mesh.Indices[j+2];
+                        v2 = vec3(mesh.Vertices[vrtx_idx].Position.X, mesh.Vertices[vrtx_idx].Position.Y, mesh.Vertices[vrtx_idx].Position.Z);
+
+                        hitable = std::make_shared<Triangle>(v0, v1, v2, material);
+                        if(transfs > 0) {
+                            hitable->transform(t);
+                        }
+                        scene.add_hitable(hitable);
+                    }
+                }
+            }
+     	}
 
     	hitables_file.close();
     }

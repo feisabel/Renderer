@@ -20,6 +20,8 @@
 #include "../include/dielectric.h"
 #include "../include/solid_texture.h"
 #include "../include/checker_texture.h"
+#include "../include/perlin_texture.h"
+#include "../include/image_texture.h"
 
 #include <iostream>
 #include <fstream>

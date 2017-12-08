@@ -17,7 +17,7 @@ void Renderer::render(char* buffer, std::unique_ptr<Shader>& shader) {
                 auto u = (double(col) + std::generate_canonical<double,10>(gen)) / (image.get_width()-1);
                 auto v = (double(row) + std::generate_canonical<double,10>(gen)) / (image.get_height()-1);
                 Ray ray = camera.get_ray(u, v);
-                c += shader->color(ray, scene);
+                c += shader->color(ray, scene);;
             }
             c /= image.get_samples();
             //correct gamma

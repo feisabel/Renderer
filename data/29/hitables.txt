@@ -1,0 +1,15 @@
+type: sphere
+center: (0, -1000, 0)
+radius: 1000
+material: diffuse
+texture: perlin
+scale: 2
+transformations: 0
+
+type: sphere
+center: (0, 2, 0)
+radius: 2
+material: diffuse
+texture: perlin
+scale: 2
+transformations: 0

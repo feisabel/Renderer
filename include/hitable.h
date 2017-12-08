@@ -8,6 +8,8 @@ class Material;
 
 struct hit_record {
 	double t;
+	double u;
+	double v;
 	point3 p;
 	vec3 normal;
 	std::shared_ptr<Material> material;
